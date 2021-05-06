@@ -34,23 +34,17 @@ def returnSingleEncoding(student):
   return arr
 
 
-def findFaces(frame, students):
-  imgS = cv2.resize(np.array(frame), (0,0), None, 0.25,0.25)
-  imgS = cv2.cvtColor(np.array(frame), cv2.COLOR_BGR2RGB)
+def findFaces(path, students):
+  image = cv2.imread(f'{path}.jpg')
+  imgS = cv2.resize(image, (0,0), None, 0.25,0.25)
+  # imgS = cv2.resize(np.array(path), (0,0), None, 0.25,0.25)
+  imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
 
-  try:
-    facesCurFrame = face_recognition.face_locations(imgS)
-    encodeCurFrame = face_recognition.face_encodings(imgS)
-  except IndexError as e:
-    print(e)
-    res = jsonify('Unable to detect faces in video')
-    res.status_code = 400
-    return res
+  facesCurFrame = face_recognition.face_locations(imgS)
+  encodeCurFrame = face_recognition.face_encodings(imgS)
 
   studentsObj = loads(students)
   encodeListKnown = returnEncodings(studentsObj)
-
-  print('encodeCurFrame', encodeCurFrame)
 
   foundFaces = []
 
@@ -77,4 +71,5 @@ def findFaces(frame, students):
 
       print('not found faces', {y1, x2, y2, x1})
 
+  # message = [{'message': 'no students where adjust camera angle of bring camera closer'}]
   return dumps(foundFaces)

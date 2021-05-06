@@ -3,12 +3,10 @@ from flask_cors import CORS, cross_origin
 from flask_pymongo import PyMongo
 from PIL import Image
 
+import os
+
 from students import Students
 import helpers
-
-import cv2
-import numpy as np
-import face_recognition
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -50,7 +48,11 @@ def findFaces():
   if request.method == 'POST':
 
     file = request.files['image']
-    img = Image.open(file)
+    # img = Image.open(file)
+
+    name = request.files['image'].filename
+    path = f'api/foundFaces/{name}'
+    file.save(f'{path}.jpg')
     
     student = Students(studentCollection)
     students = student.getStudentsForParticleCourse({id: 1}) # get students for a particlelar course
@@ -58,8 +60,12 @@ def findFaces():
     # singleStudent = student.getStudent('6086e2dc9f746c11e3573b3b')
     # singleStudentEncodings = helpers.returnSingleEncoding(singleStudent)
 
-    foundFaces = helpers.findFaces(img, students)
+    foundFaces = helpers.findFaces(path, students)
 
+    if os.path.exists(f'{path}.jpg'):
+      os.remove(f'{path}.jpg')
+    else:
+      print("The file does not exist")
     return foundFaces
 
 if __name__ == '__main__':
