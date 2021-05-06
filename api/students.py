@@ -15,6 +15,12 @@ class Students():
   def getStudent(self, id):
     student = self.studentCollection.find_one({'_id': ObjectId(id)})
     student = dumps(student)
-    print('student', student)
+    # print('student', student)
     
     return student
+
+  def getStudentsForParticleCourse(self, courseId):
+    students = self.studentCollection.find()
+    students = dumps(students)
+    
+    return students

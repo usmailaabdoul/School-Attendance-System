@@ -3,15 +3,12 @@ from flask_cors import CORS, cross_origin
 from flask_pymongo import PyMongo
 from PIL import Image
 
-import os
-import cv2
-import numpy as np
-
-import cv2
-import face_recognition
-
 from students import Students
 import helpers
+
+import cv2
+import numpy as np
+import face_recognition
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -39,10 +36,6 @@ def addNewStudent():
     string_ints = [str(int) for int in encodings]
     encodingsStr = ",".join(string_ints)
 
-    convert = encodingsStr.split(',') #convert encodings to arrays
-    val = [float(string) for string in convert] #convert encodings to arrays
-
-    # return jsonify({'msg': 'success', 'size': [img.width, img.height], 'name': name, 'matricule': matricule})
     obj = {'name': name, 'matricule': matricule, 'encodings': encodingsStr}
     student = student.addNewStudent(obj)
 
@@ -51,6 +44,23 @@ def addNewStudent():
     res.student = student
 
     return res
+
+@app.route('/findFaces', methods=["POST"])
+def findFaces():
+  if request.method == 'POST':
+
+    file = request.files['image']
+    img = Image.open(file)
+    
+    student = Students(studentCollection)
+    students = student.getStudentsForParticleCourse({id: 1}) # get students for a particlelar course
+
+    # singleStudent = student.getStudent('6086e2dc9f746c11e3573b3b')
+    # singleStudentEncodings = helpers.returnSingleEncoding(singleStudent)
+
+    foundFaces = helpers.findFaces(img, students)
+
+    return foundFaces
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
