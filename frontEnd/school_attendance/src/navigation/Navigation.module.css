@@ -1,0 +1,15 @@
+.homeContainer {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+
+.homeSidebar {
+  display: flex;
+  flex: 1.5;
+}
+
+.mainSection {
+  display: flex;
+  flex: 10;
+}

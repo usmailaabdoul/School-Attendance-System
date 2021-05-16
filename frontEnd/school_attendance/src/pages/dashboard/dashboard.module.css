@@ -1,0 +1,107 @@
+.dashboardContainer {
+  width   : 85%;
+  height  : 100vh;
+  position: fixed;
+}
+
+.webCamContainer {
+  flex                   : 5;
+  background-color       : #EBEEF2;
+  border-top-left-radius : 40px;
+  border-top-right-radius: 40px;
+  position               : relative;
+}
+
+.attendanceSection {
+  flex            : 2;
+  height          : 100%;
+  background-color: #EBEEF2;
+  border-top-left-radius : 40px;
+  border-top-right-radius: 40px;
+}
+
+.webCamWrapper {
+  flex         : 1;
+  border-radius: 40px;
+  margin       : 2rem 2rem 3rem 2rem;
+}
+
+.studentsImageWrapper {
+  width : 120px;
+  margin: 0.5rem 0.2rem;
+}
+
+.studentsImage {
+  width        : 100px;
+  height       : 100px;
+  border-radius: 10px;
+}
+
+.studentsPresent {
+  height  : 600px;
+  overflow: auto;
+}
+
+.studentsAbsent {
+  height  : 190px;
+  overflow: auto;
+}
+
+.btnPositions {
+  bottom  : 100px;
+  right   : 75px;
+  position: absolute;
+}
+
+.iconBtnRecord {
+  background-color: #3fbc36;
+  border-width    : 0;
+  height          : 50px;
+  width           : 50px;
+  border-radius   : 15px;
+}
+
+.iconBtnStop {
+  background-color: #f73100;
+  border-width    : 0;
+  height          : 50px;
+  width           : 50px;
+  border-radius   : 15px;
+}
+
+.iconBtnStop:hover {
+  transform: scale(1.1);
+  transition-duration: 500ms;
+}
+
+.iconBtnRecord:hover {
+  transform: scale(1.1);
+  transition-duration: 500ms;
+}
+
+.notRecordingBox {
+  display        : flex;
+  flex-direction : column;
+  align-items    : center;
+  justify-content: center;
+}
+
+.recordBtnIndicator {
+  height          : 50px;
+  width           : 50px;
+  background-color: #B4B7B570;
+  border-radius   : 15px;
+  display         : flex;
+  flex-direction  : column;
+  align-items     : center;
+  justify-content : center;
+}
+
+.bounding_box {
+  position: absolute;
+  box-shadow: 0 0 0 3px #149df2 inset;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  /* cursor: pointer; */
+}
