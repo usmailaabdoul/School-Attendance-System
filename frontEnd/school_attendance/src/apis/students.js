@@ -1,5 +1,5 @@
-const baseUrl = '/course'
-export default class CoursesApi {
+const baseUrl = '/user'
+export default class StudentsApi {
   constructor(api) {
     this.api = api
   }
@@ -7,9 +7,9 @@ export default class CoursesApi {
    *
    *
    * @return {*} 
-   * @memberof CoursesApi
+   * @memberof UserApi
    */
-  async courses() {
+  async users() {
     try {
       let res = await this.api.get(`${baseUrl}s/`)
       return res.data
@@ -17,29 +17,15 @@ export default class CoursesApi {
       throw e
     }
   }
-  /**
-   *
-   *
-   * @param {*} obj
-   * @return {*} 
-   * @memberof CoursesApi
-   */
-  async addCourse(obj) {
-    try {
-      let res = await this.api.post(`${baseUrl}/`, obj)
-      return res.data
-    } catch (e) {
-      throw e
-    }
-  }
+  
   /**
    *
    *
    * @param {*} id
    * @return {*} 
-   * @memberof CoursesApi
+   * @memberof UserApi
    */
-  async deleteCourse(id) {
+  async deleteUser(id) {
     try {
       console.log('request', `${baseUrl}/${id}`)
       let res = await this.api.delete(`${baseUrl}/${id}`)
@@ -54,9 +40,9 @@ export default class CoursesApi {
    * @param {*} id
    * @param {*} obj
    * @return {*} 
-   * @memberof CoursesApi
+   * @memberof UserApi
    */
-  async editCourse(id, obj) {
+  async editUser(id, obj) {
     try {
       let res = await this.api.put(`${baseUrl}/${id}`, obj)
       return res.data

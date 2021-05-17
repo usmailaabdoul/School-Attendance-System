@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef, createRef } from 'react'
 import Webcam from "react-webcam";
 import { CameraVideo, CameraVideoOffFill, PauseFill, PlayFill } from 'react-bootstrap-icons';
-import apis from '../../apis/apis'
+
+import faceRecognitionApi from '../../apis/faceRecognition'
 import Swal from 'sweetalert2'
 
 import styles from './dashboard.module.css';
@@ -14,8 +15,19 @@ const Dashboard = (props) => {
 
   let timer = createRef();
 
-  const capture = React.useCallback(() => {
+  const capture = React.useCallback(async () => {
     const imageSrc = webcamRef.current.getScreenshot();
+    let formData = new FormData();
+    formData.append('image', imageSrc);
+
+    // try {
+    //   let res = await faceRecognitionApi.findFaces(formData)
+
+    //   console.log({res});
+    // } catch (error) {
+    //   console.log({error})
+    // }
+
     let oldImages = []
     oldImages = imagesUrls;
     oldImages.push(imageSrc)
@@ -32,13 +44,25 @@ const Dashboard = (props) => {
   }, [capture, paused, startAttendance, timer]);
 
   const closeWebCam = () => {
-    if (timer.current) {
-      clearTimeout(timer.current)
-      timer.current = 0
-    }
-    setStartAttendance(false);
-    setPaused(false)
-    setImagesUrls([])
+    Swal.fire({
+      title: 'Are you sure you want to close Camera?',
+      text: 'This will stop Attendance collection and save data!',
+      icon: 'warning',
+      cancelButtonColor: '#3085d6',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      confirmButtonText: 'Yes, close Camera'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        if (timer.current) {
+          clearTimeout(timer.current)
+          timer.current = 0
+        }
+        setStartAttendance(false);
+        setPaused(false)
+        setImagesUrls([])
+      }
+    })
   }
 
   const pauseWebCam = () => {

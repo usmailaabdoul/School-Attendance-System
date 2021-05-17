@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Swal from 'sweetalert2'
-import apis from '../../apis/apis'
+// import apis from '../../apis/apis'
 import { Link } from 'react-router-dom'
 import { connect } from "react-redux";
 
@@ -22,14 +22,13 @@ const Login = (props) => {
 
     setIsLoading(true)
     event.preventDefault()
-    apis.initialize('')
     try {
-      let res = await apis.authApi.login({
-        email,
-        password
-      })
+      let res;
+      // let res = await apis.authApi.login({
+      //   email,
+      //   password
+      // })
       console.log({res})
-      apis.initialize(res.token)
 
       props.setToken(res.token)
       props.setUser(res.user)

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Swal from 'sweetalert2'
-import apis from '../../apis/apis'
 import { Link } from 'react-router-dom'
 import { connect } from "react-redux";
 
@@ -25,17 +24,16 @@ const Register = (props) => {
 
     setIsLoading(true)
     event.preventDefault()
-    apis.initialize('')
     try {
-      let res = await apis.authApi.register({
-        name,
-        email,
-        password,
-        address,
-        phoneNumber
-      })
+      let res;
+      // let res = await apis.authApi.register({
+      //   name,
+      //   email,
+      //   password,
+      //   address,
+      //   phoneNumber
+      // })
       console.log({res})
-      apis.initialize(res.token)
 
       props.setToken(res.token)
       props.setUser(res.user)

@@ -16,6 +16,11 @@ mongo = PyMongo(app)
 
 studentCollection = mongo.db.students
 
+@app.route('/test', methods=["POST"])
+def test():
+  res = jsonify('You are able to connect to the server')
+  return res
+
 @app.route('/addNewStudent', methods=["POST"])
 def addNewStudent():
   if request.method == 'POST':

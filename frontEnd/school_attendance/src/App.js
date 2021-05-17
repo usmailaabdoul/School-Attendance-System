@@ -1,5 +1,4 @@
 import React, {useEffect } from 'react'
-import apis from '../src/apis/apis'
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk';
@@ -19,7 +18,6 @@ function App() {
 
     let _user = JSON.parse(user);
     if (token && token.length > 0 && user) {
-      apis.initialize(token)
       store.dispatch(setToken(token));
       store.dispatch(setUser(_user));
     }
