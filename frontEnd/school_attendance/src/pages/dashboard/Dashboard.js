@@ -153,9 +153,8 @@ const Dashboard = (props) => {
             <div className="d-flex align-items-center flex-wrap">
               {imagesUrls && (
                 imagesUrls.map((img, index) => (
-                  <div className={`${styles.studentsImageWrapper}`}>
+                  <div key={index} className={`${styles.studentsImageWrapper}`}>
                     <img
-                      key={index}
                       alt="students"
                       className={`${styles.studentsImage}`}
                       src={img}

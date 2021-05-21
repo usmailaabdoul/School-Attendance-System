@@ -4,9 +4,12 @@ from bson.json_util import dumps, loads
 from flask_cors import CORS, cross_origin
 from flask_pymongo import PyMongo
 
+
 import base64
 import os
 
+from lecturers import Lecturers
+from courses import Courses
 from students import Students
 import helpers
 
@@ -19,6 +22,8 @@ app.config["CORS_HEADERS"] = "Content-Type"
 mongo = PyMongo(app)
 
 studentCollection = mongo.db.students
+lecturerCollection = mongo.db.lecturers
+courseCollection = mongo.db.courses
 
 @app.route('/api/v1/test', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')
@@ -28,7 +33,6 @@ def test():
 
 @app.route('/api/v1/addNewStudent', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')
-@cross_origin()
 def addNewStudent():
   if request.method == 'POST':
     student = Students(studentCollection)
@@ -53,7 +57,7 @@ def addNewStudent():
     encodingsStr = ",".join(string_ints)
 
     obj = {'name': name, 'matricule': matricule, 'email': email, 'encodings': encodingsStr, 'courses': courses, 'faculty': faculty}
-    student = student.addNewStudent(obj)
+    student.addNewStudent(obj)
 
     res = jsonify('New student added succesfully')
     return res
@@ -88,10 +92,9 @@ def findFaces():
 
 @app.route('/api/v1/addLecturer', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')
-@cross_origin()
-def addNewStudent():
+def addNewLecturer():
   if request.method == 'POST':
-    student = Students(studentCollection)
+    lecturer = Lecturers(lecturerCollection)
 
     data = request.get_json()
     name  = data['name']
@@ -100,9 +103,25 @@ def addNewStudent():
     courseCode = data['courseCode']
 
     obj = {'name': name, 'email': email, 'courseName': courseName, 'courseCode': courseCode}
-    student = student.addNewStudent(obj)
+    lecturer.addNewLecturer(obj)
 
     res = jsonify('New Lecturer added succesfully')
+    return res
+
+@app.route('/api/v1/addCourse', methods=["POST", "OPTIONS"])
+@cross_origin(headers='Content-Type')
+def addNewCourse():
+  if request.method == 'POST':
+    course = Courses(courseCollection)
+
+    data = request.get_json()
+    courseName = data['courseName']
+    courseCode = data['courseCode']
+
+    obj = {'courseName': courseName, 'courseCode': courseCode}
+    course.addNewCourse(obj)
+
+    res = jsonify('New course added succesfully')
     return res
 
 if __name__ == '__main__':

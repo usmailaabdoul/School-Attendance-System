@@ -51,25 +51,26 @@ def findFaces(path, students):
   for encodeFace, faceLoc in zip(encodeCurFrame, facesCurFrame):
     matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
     faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
-    print(faceDis)
+    # print(faceDis)
     matchIndexPosition = np.argmin(faceDis)
     matchIndexValue = min(faceDis)
-    print('min ele', matchIndexValue, matchIndexPosition)
-    print('matches', matches[matchIndexPosition])
+    # print('min ele', matchIndexValue, matchIndexPosition)
+    # print('matches', matches[matchIndexPosition])
 
     if (matchIndexValue < 0.5 ) and (matches[matchIndexPosition]):
-      foundFaces.append(studentsObj[matchIndexPosition])
       # print('found person', studentsObj[matchIndexPosition])
       y1, x2, y2, x1 = faceLoc
       y1, x2, y2, x1 =  y1* 4, x2 * 4, y2 * 4, x1 * 4
 
-      print('found faces', {y1, x2, y2, x1})
+      found = {"student": studentsObj[matchIndexPosition], "faceLocation": {'y1': y1, 'x2': x2, 'y2': y2, 'x1': x1}}
+      foundFaces.append(found)
       
     else:
       y1, x2, y2, x1 = faceLoc
       y1, x2, y2, x1 =  y1* 4, x2 * 4, y2 * 4, x1 * 4
 
-      print('not found faces', {y1, x2, y2, x1})
+      unknown = {"unknownStudent": studentsObj[matchIndexPosition], "faceLocation": {'y1': y1, 'x2': x2, 'y2': y2, 'x1': x1}}
+      foundFaces.append(unknown)
 
   # message = [{'message': 'no students where adjust camera angle of bring camera closer'}]
   return dumps(foundFaces)

@@ -10,9 +10,9 @@ const Register = (props) => {
   const {history} = props;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [address, setAddress] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [name, setName] = useState('');
+  // const [address, setAddress] = useState('');
+  // const [phoneNumber, setPhoneNumber] = useState('');
+  // const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   /**
@@ -64,16 +64,16 @@ const Register = (props) => {
       <div className={`${styles.loginInnerContainer}`}>
         <h1 className={`${styles.heading}`}>Register</h1>
         <div>
-          <input placeholder="Name" className={`${styles.loginInput} mt-3`} type="text" onChange={(event) => setName(event.target.value)} />
+          {/* <input placeholder="Name" className={`${styles.loginInput} mt-3`} type="text" onChange={(event) => setName(event.target.value)} /> */}
         </div>
         <div>
           <input placeholder="Email" className={`${styles.loginInput} mt-3`} type="text" onChange={(event) => setEmail(event.target.value)} />
         </div>
         <div>
-          <input placeholder="Address" className={`${styles.loginInput} mt-3`} type="text" onChange={(event) => setAddress(event.target.value)} />
+          {/* <input placeholder="Address" className={`${styles.loginInput} mt-3`} type="text" onChange={(event) => setAddress(event.target.value)} /> */}
         </div>
         <div>
-          <input placeholder="Phone number" className={`${styles.loginInput} mt-3`} type="number" onChange={(event) => setPhoneNumber(event.target.value)} />
+          {/* <input placeholder="Phone number" className={`${styles.loginInput} mt-3`} type="number" onChange={(event) => setPhoneNumber(event.target.value)} /> */}
         </div>
         <div>
           <input placeholder="Password" className={`${styles.loginInput} mt-3`} type="password" onChange={(event) => setPassword(event.target.value)} />
