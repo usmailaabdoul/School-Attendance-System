@@ -3,12 +3,7 @@ from flask import Flask, request, jsonify
 from bson.json_util import dumps, loads
 from flask_cors import CORS, cross_origin
 from flask_pymongo import PyMongo
-from PIL import Image
-from io import BytesIO
-import numpy as np
 
-import io
-import cv2
 import base64
 import os
 
@@ -28,46 +23,39 @@ studentCollection = mongo.db.students
 @app.route('/api/v1/test', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')
 def test():
-  # data = request.get_json()
-
-
-  # img_data = data['image']
-
-  # imgdata = base64.b64decode(img_data)
-  # path = f'api/currentFrame/imageFrame'
-
-  # with open(f'{path}.jpg', 'wb') as f:
-  #   f.write(imgdata)
-
   res = jsonify('You are able to connect to the server')
   return res
 
-@app.route('/api/v1/addNewStudent', methods=["POST"])
+@app.route('/api/v1/addNewStudent', methods=["POST", "OPTIONS"])
+@cross_origin(headers='Content-Type')
 @cross_origin()
 def addNewStudent():
   if request.method == 'POST':
     student = Students(studentCollection)
 
-    name  = request.args.get('name', None)
-    matricule  = request.args.get('matricule', None)
+    data = request.get_json()
+    name  = data['name']
+    matricule  = data['matricule']
+    email  = data['email']
+    courses = data['courses']
+    faculty = data['faculty']
+    img_data = data['image']
 
-    path = f'api/images/{name}'
+    imgdata = base64.b64decode(img_data)
+    path = f'api/images/{matricule}'
 
-    file = request.files['image']
-    file.save(f'{path}.jpg')
+    with open(f'{path}.jpg', 'wb') as f:
+      f.write(imgdata)
     
     encodings = helpers.getEncodings(path)
 
     string_ints = [str(int) for int in encodings]
     encodingsStr = ",".join(string_ints)
 
-    obj = {'name': name, 'matricule': matricule, 'encodings': encodingsStr}
+    obj = {'name': name, 'matricule': matricule, 'email': email, 'encodings': encodingsStr, 'courses': courses, 'faculty': faculty}
     student = student.addNewStudent(obj)
 
     res = jsonify('New student added succesfully')
-    res.status_code = 200
-    res.student = student
-
     return res
 
 @app.route('/api/v1/findFaces', methods=["POST", "OPTIONS"])
@@ -97,6 +85,25 @@ def findFaces():
     else:
       print("The file does not exist")
     return foundFaces
+
+@app.route('/api/v1/addLecturer', methods=["POST", "OPTIONS"])
+@cross_origin(headers='Content-Type')
+@cross_origin()
+def addNewStudent():
+  if request.method == 'POST':
+    student = Students(studentCollection)
+
+    data = request.get_json()
+    name  = data['name']
+    email  = data['email']
+    courseName = data['courseName']
+    courseCode = data['courseCode']
+
+    obj = {'name': name, 'email': email, 'courseName': courseName, 'courseCode': courseCode}
+    student = student.addNewStudent(obj)
+
+    res = jsonify('New Lecturer added succesfully')
+    return res
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
