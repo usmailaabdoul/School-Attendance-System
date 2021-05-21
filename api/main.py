@@ -1,27 +1,49 @@
+from cv2 import data
 from flask import Flask, request, jsonify
+from bson.json_util import dumps, loads
 from flask_cors import CORS, cross_origin
 from flask_pymongo import PyMongo
 from PIL import Image
+from io import BytesIO
+import numpy as np
 
+import io
+import cv2
+import base64
 import os
 
 from students import Students
 import helpers
 
 app = Flask(__name__)
-CORS(app, support_credentials=True)
+CORS(app)
 
 app.config["MONGO_URI"] = "mongodb://localhost:27017/university"
+app.config["CORS_HEADERS"] = "Content-Type"
+
 mongo = PyMongo(app)
 
 studentCollection = mongo.db.students
 
-@app.route('/test', methods=["POST"])
+@app.route('/api/v1/test', methods=["POST", "OPTIONS"])
+@cross_origin(headers='Content-Type')
 def test():
+  # data = request.get_json()
+
+
+  # img_data = data['image']
+
+  # imgdata = base64.b64decode(img_data)
+  # path = f'api/currentFrame/imageFrame'
+
+  # with open(f'{path}.jpg', 'wb') as f:
+  #   f.write(imgdata)
+
   res = jsonify('You are able to connect to the server')
   return res
 
-@app.route('/addNewStudent', methods=["POST"])
+@app.route('/api/v1/addNewStudent', methods=["POST"])
+@cross_origin()
 def addNewStudent():
   if request.method == 'POST':
     student = Students(studentCollection)
@@ -48,16 +70,19 @@ def addNewStudent():
 
     return res
 
-@app.route('/findFaces', methods=["POST"])
+@app.route('/api/v1/findFaces', methods=["POST", "OPTIONS"])
+@cross_origin(headers='Content-Type')
 def findFaces():
   if request.method == 'POST':
+    data = request.get_json()
 
-    file = request.files['image']
-    # img = Image.open(file)
+    img_data = data['image']
 
-    name = request.files['image'].filename
-    path = f'api/foundFaces/{name}'
-    file.save(f'{path}.jpg')
+    imgdata = base64.b64decode(img_data)
+    path = f'api/currentFrame/imageFrame'
+
+    with open(f'{path}.jpg', 'wb') as f:
+      f.write(imgdata)
     
     student = Students(studentCollection)
     students = student.getStudentsForParticleCourse({id: 1}) # get students for a particlelar course

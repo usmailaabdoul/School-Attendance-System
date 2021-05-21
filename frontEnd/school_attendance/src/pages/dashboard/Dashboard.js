@@ -17,16 +17,16 @@ const Dashboard = (props) => {
 
   const capture = React.useCallback(async () => {
     const imageSrc = webcamRef.current.getScreenshot();
-    let formData = new FormData();
-    formData.append('image', imageSrc);
 
-    // try {
-    //   let res = await faceRecognitionApi.findFaces(formData)
-
-    //   console.log({res});
-    // } catch (error) {
-    //   console.log({error})
-    // }
+    let newStr = imageSrc.split(',');
+    console.log({newStr})
+    try {
+      let obj = {name: 'abdoul', image: newStr[1]}
+      let res = await faceRecognitionApi.findFaces(obj)
+      console.log({res});
+    } catch (error) {
+      console.log({error})
+    }
 
     let oldImages = []
     oldImages = imagesUrls;
