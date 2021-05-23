@@ -4,13 +4,13 @@ from bson.json_util import dumps, loads
 from flask_cors import CORS, cross_origin
 from flask_pymongo import PyMongo
 
-
 import base64
 import os
 
 from lecturers import Lecturers
 from courses import Courses
 from students import Students
+from attendance import Attendance
 import helpers
 
 app = Flask(__name__)
@@ -24,6 +24,7 @@ mongo = PyMongo(app)
 studentCollection = mongo.db.students
 lecturerCollection = mongo.db.lecturers
 courseCollection = mongo.db.courses
+attendanceCollection = mongo.db.attendance
 
 @app.route('/api/v1/test', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')
@@ -45,11 +46,8 @@ def addNewStudent():
     faculty = data['faculty']
     img_data = data['image']
 
-    imgdata = base64.b64decode(img_data)
     path = f'api/images/{matricule}'
-
-    with open(f'{path}.jpg', 'wb') as f:
-      f.write(imgdata)
+    helpers.base64toImg(img_data, path)
     
     encodings = helpers.getEncodings(path)
 
@@ -62,33 +60,73 @@ def addNewStudent():
     res = jsonify('New student added succesfully')
     return res
 
+@app.route('/api/v1/startAttendance', methods=["POST", "OPTIONS"])
+@cross_origin(headers='Content-Type')
+def startNewAttendance():
+  if request.method == 'POST':
+    attendance = Attendance(attendanceCollection)
+
+    data = request.get_json()
+    courseCode = data['courseCode']
+
+    date = helpers.getDate()
+
+    print(date)
+    attendanceExits = attendance.getAttendance(date, courseCode)
+    attendanceExits = loads(attendanceExits)
+
+    if (len(attendanceExits) > 0):
+      res = jsonify('Attendace has already been taken for today')
+      return res
+
+    student = Students(studentCollection)
+    students = student.getStudentsForParticleCourse(courseCode)
+
+    stdAttendance = loads(students)
+    for student in stdAttendance:
+      student['present'] = False
+
+    classAttendance = {'allStudents': stdAttendance, 'unknownStudents': []}
+    obj = {'courseCode': courseCode, 'date': date, 'classAttendance': classAttendance}
+
+    att = attendance.addNewAttendance(obj)
+
+    res = jsonify('New attendace started.')
+    return att
+
 @app.route('/api/v1/findFaces', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')
 def findFaces():
   if request.method == 'POST':
+    attendance = Attendance(attendanceCollection)
+
     data = request.get_json()
 
     img_data = data['image']
+    courseCode = data['courseCode']
 
-    imgdata = base64.b64decode(img_data)
     path = f'api/currentFrame/imageFrame'
-
-    with open(f'{path}.jpg', 'wb') as f:
-      f.write(imgdata)
+    helpers.base64toImg(img_data, path)
     
-    student = Students(studentCollection)
-    students = student.getStudentsForParticleCourse({id: 1}) # get students for a particlelar course
+    date = helpers.getDate() # Date of today
+    currentClassAttendace = attendance.getAttendance(date, courseCode)
+    currentClassAttendanceObj = loads(currentClassAttendace)
 
-    # singleStudent = student.getStudent('6086e2dc9f746c11e3573b3b')
-    # singleStudentEncodings = helpers.returnSingleEncoding(singleStudent)
-
-    foundFaces = helpers.findFaces(path, students)
+    markedAttendace =  helpers.findFaces(path, currentClassAttendanceObj)
+    attendance.updateStudentAttendance(currentClassAttendanceObj[0]['_id'], markedAttendace)
 
     if os.path.exists(f'{path}.jpg'):
       os.remove(f'{path}.jpg')
     else:
       print("The file does not exist")
-    return foundFaces
+
+    completeAttendace = attendance.getAttendanceById(currentClassAttendanceObj[0]['_id'])
+    completeAttendaceObj = loads(completeAttendace)
+
+    for student in completeAttendaceObj['classAttendance']['allStudents']:
+      student.pop('encodings')
+
+    return dumps(completeAttendaceObj)
 
 @app.route('/api/v1/addLecturer', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')

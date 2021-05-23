@@ -19,8 +19,8 @@ class Students():
     
     return student
 
-  def getStudentsForParticleCourse(self, courseId):
-    students = self.studentCollection.find()
+  def getStudentsForParticleCourse(self, courseCode):
+    students = self.studentCollection.find({'courses': courseCode})
     students = dumps(students)
     
     return students
