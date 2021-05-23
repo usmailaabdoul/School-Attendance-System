@@ -1,0 +1,35 @@
+.profileImage {
+  width        : 80px;
+  height       : 80px;
+  border-radius: 15px
+}
+
+.profileContainer {
+  display            : flex;
+  align-items        : center;
+  /* background-color: #fff; */
+  padding            : 7px 10px;
+  border-radius      : 20px;
+  width              : 100%;
+  margin             : 10px 0px;
+}
+
+.profileBody {
+  margin-left: 10px;
+  flex       : 1;
+}
+
+.profileName {
+  font-size: 20px;
+  margin   : 0;
+}
+
+.profileMatricule {
+  font-size: 14px;
+  /* margin: 0; */
+}
+
+.checkBox {
+  border-width    : 0;
+  background-color: transparent;
+}

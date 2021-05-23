@@ -71,7 +71,6 @@ def startNewAttendance():
 
     date = helpers.getDate()
 
-    print(date)
     attendanceExits = attendance.getAttendance(date, courseCode)
     attendanceExits = loads(attendanceExits)
 
@@ -91,8 +90,8 @@ def startNewAttendance():
 
     att = attendance.addNewAttendance(obj)
 
-    res = jsonify('New attendace started.')
-    return att
+    res = jsonify('New Attendance started.')
+    return res
 
 @app.route('/api/v1/findFaces', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')

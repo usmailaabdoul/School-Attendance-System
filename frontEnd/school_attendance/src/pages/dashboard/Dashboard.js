@@ -2,42 +2,66 @@ import React, { useEffect, useState, useRef, createRef } from 'react'
 import Webcam from "react-webcam";
 import { CameraVideo, CameraVideoOffFill, PauseFill, PlayFill } from 'react-bootstrap-icons';
 
+import { AttendanceCard, SortButton } from '../../components';
+
 import faceRecognitionApi from '../../apis/faceRecognition'
 import Swal from 'sweetalert2'
 
 import styles from './dashboard.module.css';
 
+const Attendance = [
+  { image: 'https://i.pinimg.com/originals/ca/76/0b/ca760b70976b52578da88e06973af542.jpg', name: 'Usmaila Moumini', matricule: 'FE17A090', email: 'usmaila.abdoul@ubuea.cm', present: false },
+  { image: 'https://i.pinimg.com/originals/ca/76/0b/ca760b70976b52578da88e06973af542.jpg', name: 'Abdoul', matricule: 'FE17A090', email: 'usmaila.abdoul@ubuea.cm', present: true },
+  { image: 'https://i.pinimg.com/originals/ca/76/0b/ca760b70976b52578da88e06973af542.jpg', name: 'Usmaila Abdoul', matricule: 'FE17A090', email: 'usmaila.abdoul@ubuea.cm', present: true },
+  { image: 'https://i.pinimg.com/originals/ca/76/0b/ca760b70976b52578da88e06973af542.jpg', name: 'Usmaila', matricule: 'FE17A090', email: 'usmaila.abdoul@ubuea.cm', present: false }
+]
 const Dashboard = (props) => {
   const webcamRef = useRef(null);
   const [imagesUrls, setImagesUrls] = useState([]);
   const [startAttendance, setStartAttendance] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [attendance, setAttendance] = useState([]);
+  const [sortBy, setSortBy] = useState('present');
+  const [isLoading, setIsLoading] = useState(false);
 
   let timer = createRef();
+
+  useEffect(() => {
+    if (sortBy === 'present') {
+      Attendance.sort((x, y) => { return y.present - x.present });
+      setAttendance([...Attendance])
+    } else if (sortBy === 'absent') {
+      Attendance.sort((x, y) => { return x.present - y.present });
+      setAttendance([...Attendance])
+    }
+
+  }, [sortBy])
 
   const capture = React.useCallback(async () => {
     const imageSrc = webcamRef.current.getScreenshot();
 
     let newStr = imageSrc.split(',');
-    console.log({newStr})
+    // console.log({ newStr })
     try {
-      let obj = {name: 'abdoul', image: newStr[1]}
+      let obj = { courseCode: 'CEF304', image: newStr[1] }
       let res = await faceRecognitionApi.findFaces(obj)
-      console.log({res});
+      console.log({ res });
+      setAttendance(res.classAttendance.allStudents)
     } catch (error) {
-      console.log({error})
+      console.log({ error })
     }
 
-    let oldImages = []
-    oldImages = imagesUrls;
-    oldImages.push(imageSrc)
+    // let oldImages = []
+    // oldImages = imagesUrls;
+    // oldImages.push(imageSrc)
 
-    setImagesUrls([...oldImages]);
-  }, [imagesUrls]);
+    // setImagesUrls([...oldImages]);
+  }, []);
 
   useEffect(() => {
     if (startAttendance && !paused) {
       timer.current = setTimeout(() => {
+        console.log('its been 3secs')
         capture()
       }, 3000);
     }
@@ -76,6 +100,20 @@ const Dashboard = (props) => {
     setPaused(false)
   }
 
+  const startTakingAttendance = async () => {
+    setIsLoading(true)
+    let obj = { courseCode: 'CEF304' }
+    try {
+      let res = await faceRecognitionApi.startAttendance(obj)
+      console.log({ res });
+      setIsLoading(false)
+      setStartAttendance(true)
+    } catch (error) {
+      setIsLoading(false)
+      console.log({ error })
+    }
+  }
+
   return (
     <div className={`${styles.dashboardContainer} m-3 d-flex flex-column`}>
       <div className="p-2 mb-2">
@@ -106,10 +144,19 @@ const Dashboard = (props) => {
               />
             ) : (
               <div className={`${styles.notRecordingBox}`}>
-                <h5>To start Taking Attendance click button below</h5>
-                <div className={`mt-1 ${styles.recordBtnIndicator}`}>
-                  <CameraVideo size={30} color="#B4B7B5" />
-                </div>
+                {isLoading ? (
+                  <div className="d-flex justify-content-center align-items-center mt-2">
+                    <div className="spinner-border" style={{ width: '2rem', height: '2rem', color: '#406df9' }} role="status">
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <h5>To start Taking Attendance click button below</h5>
+                    <div className={`mt-1 ${styles.recordBtnIndicator}`}>
+                      <CameraVideo size={30} color="#B4B7B5" />
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </div>
@@ -118,33 +165,31 @@ const Dashboard = (props) => {
             {startAttendance && (
               <>
                 <button onClick={() => closeWebCam()} className={`mx-2 ${styles.iconBtnStop} shadow-sm`}><CameraVideoOffFill size={30} color="#ffffff" /></button>
-                <button onClick={() => pauseWebCam()} className={`mx-2 ${styles.iconBtnRecord} shadow-sm`} style={paused ? {backgroundColor: '#3fbc3670'} : {backgroundColor: '#3fbc36'}}><PauseFill size={30} color="#ffffff" /></button>
-                <button onClick={() => playWebCam()} className={`mx-2 ${styles.iconBtnRecord} shadow-sm`} style={paused ? {backgroundColor: '#3fbc36'} : {backgroundColor: '#3fbc3670'}}><PlayFill size={30} color="#ffffff" /></button>
+                <button onClick={() => pauseWebCam()} className={`mx-2 ${styles.iconBtnRecord} shadow-sm`} style={paused ? { backgroundColor: '#3fbc3670' } : { backgroundColor: '#3fbc36' }}><PauseFill size={30} color="#ffffff" /></button>
+                <button onClick={() => playWebCam()} className={`mx-2 ${styles.iconBtnRecord} shadow-sm`} style={paused ? { backgroundColor: '#3fbc36' } : { backgroundColor: '#3fbc3670' }}><PlayFill size={30} color="#ffffff" /></button>
               </>
             )}
             {!startAttendance && (
-              <button onClick={() => setStartAttendance(true)} className={`mx-2 ${styles.iconBtnRecord} shadow-sm`}><CameraVideo size={30} color="#ffffff" /></button>
+              <button onClick={() => startTakingAttendance()} className={`mx-2 ${styles.iconBtnRecord} shadow-sm`}><CameraVideo size={30} color="#ffffff" /></button>
             )}
           </div>
         </div>
         <div className={`d-flex flex-column ms-4 ${styles.attendanceSection}`}>
-          <h5 className="text-success mx-4 mt-4">Students Present</h5>
+          <div className='d-flex align-items-center justify-content-between  ms-4 me-2 mt-4'>
+            <h5 className="text-success">Attendance</h5>
+            <SortButton
+              sortBy={sortBy}
+              onClick={(value) => setSortBy(value)}
+            />
+          </div>
           <div className={`mx-4 ${styles.studentsPresent}`}>
             <div className="d-flex align-items-center flex-wrap">
-              {imagesUrls && (
-                imagesUrls.map((img, index) => (
-                  <div className={`${styles.studentsImageWrapper}`}>
-                    <img
-                      key={index}
-                      alt="students"
-                      className={`${styles.studentsImage}`}
-                      src={img}
-                    />
-                    <h6 className="m-0">usmaila abdoul</h6>
-                    <h6 className="m-0">FE17A090</h6>
-                  </div>
-                ))
-              )}
+              {attendance.map((att, index) => (
+                <AttendanceCard
+                  key={index}
+                  attendance={att}
+                />
+              ))}
             </div>
           </div>
 
