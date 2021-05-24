@@ -69,8 +69,8 @@ def findFaces(path, currentClassAttendanceObj):
       y1, x2, y2, x1 = faceLoc
       y1, x2, y2, x1 =  y1* 4, x2 * 4, y2 * 4, x1 * 4
 
-      unknown = {"unknownStudent": currentClassAttendanceObj[matchIndexPosition], "faceLocation": {'y1': y1, 'x2': x2, 'y2': y2, 'x1': x1}}
-      foundFaces.append(unknown)
+      # unknown = {"unknownStudent": currentClassAttendanceObj[matchIndexPosition], "faceLocation": {'y1': y1, 'x2': x2, 'y2': y2, 'x1': x1}}
+      # foundFaces.append(unknown)
 
   return students
 

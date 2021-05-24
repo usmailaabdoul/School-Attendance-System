@@ -41,6 +41,3 @@ def uploadImage(path):
   url = storage.child(f'profileImages/{name.name}').get_url(user['idToken'])
   
   return url
-
-url = uploadImage('api/images/abdoul')
-print(url)

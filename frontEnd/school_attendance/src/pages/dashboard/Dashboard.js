@@ -9,12 +9,7 @@ import Swal from 'sweetalert2'
 
 import styles from './dashboard.module.css';
 
-const Attendance = [
-  { image: 'https://i.pinimg.com/originals/ca/76/0b/ca760b70976b52578da88e06973af542.jpg', name: 'Usmaila Moumini', matricule: 'FE17A090', email: 'usmaila.abdoul@ubuea.cm', present: false },
-  { image: 'https://i.pinimg.com/originals/ca/76/0b/ca760b70976b52578da88e06973af542.jpg', name: 'Abdoul', matricule: 'FE17A090', email: 'usmaila.abdoul@ubuea.cm', present: true },
-  { image: 'https://i.pinimg.com/originals/ca/76/0b/ca760b70976b52578da88e06973af542.jpg', name: 'Usmaila Abdoul', matricule: 'FE17A090', email: 'usmaila.abdoul@ubuea.cm', present: true },
-  { image: 'https://i.pinimg.com/originals/ca/76/0b/ca760b70976b52578da88e06973af542.jpg', name: 'Usmaila', matricule: 'FE17A090', email: 'usmaila.abdoul@ubuea.cm', present: false }
-]
+
 const Dashboard = (props) => {
   const webcamRef = useRef(null);
   const [imagesUrls, setImagesUrls] = useState([]);
@@ -26,22 +21,22 @@ const Dashboard = (props) => {
 
   let timer = createRef();
 
-  useEffect(() => {
-    if (sortBy === 'present') {
-      Attendance.sort((x, y) => { return y.present - x.present });
-      setAttendance([...Attendance])
-    } else if (sortBy === 'absent') {
-      Attendance.sort((x, y) => { return x.present - y.present });
-      setAttendance([...Attendance])
-    }
+  // useEffect(() => {
+  //   if (sortBy === 'present') {
+  //     attendance.sort((x, y) => { return y.present - x.present });
+  //     setAttendance([...attendance])
+  //   } else if (sortBy === 'absent') {
+  //     attendance.sort((x, y) => { return x.present - y.present });
+  //     setAttendance([...attendance])
+  //   }
 
-  }, [sortBy])
+  // }, [sortBy])
 
   const capture = React.useCallback(async () => {
     const imageSrc = webcamRef.current.getScreenshot();
 
     let newStr = imageSrc.split(',');
-    // console.log({ newStr })
+
     try {
       let obj = { courseCode: 'CEF304', image: newStr[1] }
       let res = await faceRecognitionApi.findFaces(obj)
@@ -50,12 +45,6 @@ const Dashboard = (props) => {
     } catch (error) {
       console.log({ error })
     }
-
-    // let oldImages = []
-    // oldImages = imagesUrls;
-    // oldImages.push(imageSrc)
-
-    // setImagesUrls([...oldImages]);
   }, []);
 
   useEffect(() => {

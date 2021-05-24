@@ -12,7 +12,7 @@ const AttendanceCard = ({ attendance }) => {
 
   return (
     <div className={`${styles.profileContainer}`} style={present ? { backgroundColor: '#3fbc3630' } : { backgroundColor: '#f7310030' }}>
-      <img className={`${styles.profileImage}`} src={attendance.image} alt="profile" />
+      <img className={`${styles.profileImage}`} src={attendance.photoUrl} alt="profile" />
       <div className={`${styles.profileBody}`}>
         <div>
           <h5 className={`${styles.profileName}`}>{attendance.name}</h5>
