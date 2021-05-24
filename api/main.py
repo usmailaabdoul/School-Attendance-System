@@ -12,6 +12,7 @@ from courses import Courses
 from students import Students
 from attendance import Attendance
 import helpers
+import firebase
 
 app = Flask(__name__)
 CORS(app)
@@ -54,8 +55,14 @@ def addNewStudent():
     string_ints = [str(int) for int in encodings]
     encodingsStr = ",".join(string_ints)
 
-    obj = {'name': name, 'matricule': matricule, 'email': email, 'encodings': encodingsStr, 'courses': courses, 'faculty': faculty}
+    url = firebase.uploadImage(path)
+    obj = {'name': name, 'photoUrl': url, 'matricule': matricule, 'email': email, 'encodings': encodingsStr, 'courses': courses, 'faculty': faculty}
     student.addNewStudent(obj)
+
+    if os.path.exists(f'{path}.jpg'):
+      os.remove(f'{path}.jpg')
+    else:
+      print("The file does not exist")
 
     res = jsonify('New student added succesfully')
     return res
