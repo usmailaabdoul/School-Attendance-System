@@ -128,11 +128,45 @@ def findFaces():
 
     completeAttendace = attendance.getAttendanceById(currentClassAttendanceObj[0]['_id'])
     completeAttendaceObj = loads(completeAttendace)
-
+  
     for student in completeAttendaceObj['classAttendance']['allStudents']:
       student.pop('encodings')
 
     return dumps(completeAttendaceObj)
+
+@app.route('/api/v1/attendance', methods=["POST", "OPTIONS"])
+@cross_origin(headers='Content-Type')
+def getAttendance():
+  if request.method == 'POST':
+    attendance = Attendance(attendanceCollection)
+
+    data = request.get_json()
+    courseCode = data['courseCode']
+
+    res = attendance.getAttendanceByCourseCode(courseCode)
+    attendanceObj = loads(res)
+
+    for att in attendanceObj:
+      for student in att['classAttendance']['allStudents']:
+        student.pop('encodings')
+
+    return dumps(attendanceObj)
+
+@app.route('/api/v1/students', methods=["POST", "OPTIONS"])
+@cross_origin(headers='Content-Type')
+def getStudents():
+  if request.method == 'POST':
+    student = Students(studentCollection)
+
+    data = request.get_json()
+    courseCode = data['courseCode']
+
+    students = student.getStudentsForParticleCourse(courseCode)
+    studentsObj = loads(students)
+    for student in studentsObj:
+      student.pop('encodings')
+
+    return dumps(studentsObj)
 
 @app.route('/api/v1/addLecturer', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')

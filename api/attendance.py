@@ -32,3 +32,9 @@ class Attendance():
     attendance = self.attendanceCollection.update_one(query, newValues)
     
     return attendance
+  
+  def getAttendanceByCourseCode(self, courseCode):
+    attendance = self.attendanceCollection.find({'courseCode': courseCode})
+    attendance = dumps(attendance)
+
+    return attendance
