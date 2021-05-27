@@ -163,9 +163,9 @@ const Dashboard = (props) => {
             )}
           </div>
         </div>
-        <div className={`d-flex flex-column ms-4 ${styles.attendanceSection}`}>
-          <div className='d-flex align-items-center justify-content-between  ms-4 me-2 mt-4'>
-            <h5 className="text-success">Attendance</h5>
+        <div className={`d-flex flex-column ml-4 ${styles.attendanceSection}`}>
+          <div className='d-flex align-items-center justify-content-between  ml-4 mx-2 mt-4'>
+            <h5 className="text-success ">Attendance</h5>
             <SortButton
               sortBy={sortBy}
               onClick={(value) => setSortBy(value)}

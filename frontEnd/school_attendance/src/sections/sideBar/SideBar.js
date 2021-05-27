@@ -23,7 +23,7 @@ const SideBar = (props) => {
   
   return (
     <div className="d-flex flex-column p-3 pb-5 text-white bg-white" style={{ width: 280, height: '100vh', position: 'fixed' }}>
-      <a href="/" className="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+      <a href="/" className="d-flex align-items-center mb-3 mb-md-0 mr-md-auto text-dark text-decoration-none">
         {/* <span className="fs-4">CARNA PROJECT</span> */}
       </a>
       <hr />
@@ -43,7 +43,7 @@ const SideBar = (props) => {
       <div className="dropdown">
         <span onClick={() => logout()}>
           <a href="/login" className="d-flex align-items-center text-dark text-decoration-none">
-            <img src="https://github.com/mdo.png" alt="" width="32" height="32" className="rounded-circle me-2" />
+            <img src="https://github.com/mdo.png" alt="" width="32" height="32" className="rounded-circle mr-2" />
             <strong>Log out</strong>
           </a>
         </span>

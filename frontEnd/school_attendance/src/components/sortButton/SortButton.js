@@ -26,8 +26,8 @@ export default function SortButton(props) {
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        <Dropdown.Item onClick={() => onClick('present')} active={sortBy === 'present' ? true : false}>Present first</Dropdown.Item>
-        <Dropdown.Item onClick={() => onClick('absent')} active={sortBy === 'absent' ? true : false}>Absent first</Dropdown.Item>
+        <Dropdown.Item onClick={() => onClick('present')} active={sortBy === 'present' ? true : false}>Sort by present</Dropdown.Item>
+        <Dropdown.Item onClick={() => onClick('absent')} active={sortBy === 'absent' ? true : false}>Sort by absent</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
   )
