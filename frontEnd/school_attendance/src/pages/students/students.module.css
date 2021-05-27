@@ -1,0 +1,21 @@
+.attendanceContainer {
+  width   : 85%;
+  height  : 100vh;
+  position: fixed;
+}
+
+.webCamContainer {
+  flex                   : 5;
+  background-color       : #EBEEF2;
+  border-top-left-radius : 40px;
+  border-top-right-radius: 40px;
+  position               : relative;
+}
+
+.attendanceTable {
+  width           : auto;
+  height          : 100%;
+  margin          : 0rem 1.7rem 0 1.7rem;
+  background-color: #fff;
+  border-width: 0;
+}

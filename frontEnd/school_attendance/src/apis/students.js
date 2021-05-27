@@ -1,54 +1,25 @@
-const baseUrl = '/user'
-export default class StudentsApi {
-  constructor(api) {
-    this.api = api
-  }
-  /**
-   *
-   *
-   * @return {*} 
-   * @memberof UserApi
-   */
-  async users() {
-    try {
-      let res = await this.api.get(`${baseUrl}s/`)
-      return res.data
-    } catch (e) {
-      throw e
-    }
-  }
-  
-  /**
-   *
-   *
-   * @param {*} id
-   * @return {*} 
-   * @memberof UserApi
-   */
-  async deleteUser(id) {
-    try {
-      console.log('request', `${baseUrl}/${id}`)
-      let res = await this.api.delete(`${baseUrl}/${id}`)
-      return res.data
-    } catch (e) {
-      throw e
-    }
-  }
-  /**
-   *
-   *
-   * @param {*} id
-   * @param {*} obj
-   * @return {*} 
-   * @memberof UserApi
-   */
-  async editUser(id, obj) {
-    try {
-      let res = await this.api.put(`${baseUrl}/${id}`, obj)
-      return res.data
-    } catch (e) {
-      throw e
-    }
-  }
 
+let url = `http://127.0.0.1:5000/api/v1`;
+let config = {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  }
 }
+
+class StudentsApi {
+  async getStudents(obj) {
+    try {
+      let res = await fetch(`${url}/students`, {...config, body: JSON.stringify(obj)})
+
+      res = res.json()
+      return res
+    } catch (e) {
+      throw e
+    }
+  }
+}
+
+const studentsApi = new StudentsApi();
+
+export default studentsApi;

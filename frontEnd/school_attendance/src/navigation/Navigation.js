@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from "react-redux";
 
-import { Dashboard, Login, Register, Attendance } from '../pages';
+import { Dashboard, Login, Register, Attendance, Students } from '../pages';
 import { SideBar } from "../sections";
 
 import styles from './Navigation.module.css';
@@ -17,6 +17,7 @@ const Navigation = ({ token }) => {
           <div className={styles.mainSection}>
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/attendance" component={Attendance} />
+            <Route path="/students" component={Students} />
           </div>
         </div>
       ) : (
