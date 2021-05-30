@@ -15,7 +15,9 @@ const Dashboard = (props) => {
   const [imagesUrls, setImagesUrls] = useState([]);
   const [startAttendance, setStartAttendance] = useState(false);
   const [paused, setPaused] = useState(false);
-  const [attendance, setAttendance] = useState([]);
+  const [attendance, setAttendance] = useState([
+    {name: 'Usmaila Abdoul', matricule: 'FE17A090', email: 'ismaelabdul77@gmail.com', present: false, photoUrl: 'https://cdn.futura-sciences.com/buildsv6/images/mediumoriginal/6/5/2/652a7adb1b_98148_01-intro-773.jpg'}
+  ]);
   const [sortBy, setSortBy] = useState('present');
   const [isLoading, setIsLoading] = useState(false);
 

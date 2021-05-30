@@ -1,6 +1,6 @@
 .profileImage {
-  width        : 80px;
-  height       : 80px;
+  width        : 55px;
+  height       : 55px;
   border-radius: 15px
 }
 
@@ -20,7 +20,7 @@
 }
 
 .profileName {
-  font-size: 20px;
+  font-size: 18px;
   margin   : 0;
 }
 

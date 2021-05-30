@@ -18,16 +18,15 @@ const AttendanceCard = ({ attendance }) => {
           <h5 className={`${styles.profileName}`}>{attendance.name}</h5>
           <h6 className={`${styles.profileMatricule}`}>{attendance.matricule}</h6>
         </div>
-        <h6 className={`${styles.profileEmail}`}>{attendance.email}</h6>
       </div>
       <div>
         {present ? (
           <button onClick={() => setPresent(false)} className={`${styles.checkBox}`}>
-            <CheckSquareFill size={35} color='#3fbc36' />
+            <CheckSquareFill size={25} color='#3fbc36' />
           </button>
         ) : (
           <button onClick={() => setPresent(true)} className={`${styles.checkBox}`}>
-            <Square size={35} color='#f73100' />
+            <Square size={25} color='#f73100' />
           </button>
         )}
       </div>
