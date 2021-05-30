@@ -7,8 +7,8 @@
 .webCamContainer {
   flex                   : 5;
   background-color       : #EBEEF2;
-  border-top-left-radius : 40px;
-  border-top-right-radius: 40px;
+  border-top-left-radius : 20px;
+  border-top-right-radius: 20px;
   position               : relative;
 }
 
@@ -16,14 +16,14 @@
   flex            : 2;
   height          : 100%;
   background-color: #EBEEF2;
-  border-top-left-radius : 40px;
-  border-top-right-radius: 40px;
+  border-top-left-radius : 20px;
+  border-top-right-radius: 20px;
 }
 
 .webCamWrapper {
   flex         : 1;
-  border-radius: 40px;
-  margin       : 2rem 2rem 3rem 2rem;
+  border-radius: 20px;
+  margin       : 1.5rem 1.5rem 2.5rem 1.5rem;
 }
 
 .studentsImageWrapper {
@@ -58,7 +58,7 @@
   border-width    : 0;
   height          : 50px;
   width           : 50px;
-  border-radius   : 15px;
+  border-radius   : 7px;
 }
 
 .iconBtnStop {
@@ -66,7 +66,7 @@
   border-width    : 0;
   height          : 50px;
   width           : 50px;
-  border-radius   : 15px;
+  border-radius   : 7px;
 }
 
 .iconBtnStop:hover {
@@ -90,7 +90,7 @@
   height          : 50px;
   width           : 50px;
   background-color: #B4B7B570;
-  border-radius   : 15px;
+  border-radius   : 7px;
   display         : flex;
   flex-direction  : column;
   align-items     : center;
@@ -104,4 +104,10 @@
   flex-wrap: wrap;
   justify-content: center;
   /* cursor: pointer; */
+}
+
+.searchInput {
+  border-color: #b7b9bc;
+  background-color: #fff;
+  border-radius: 5px;
 }

@@ -3,7 +3,7 @@ import { Square, CheckSquareFill } from 'react-bootstrap-icons';
 
 import styles from './AttendanceCard.module.css'
 
-const AttendanceCard = ({ attendance }) => {
+const AttendanceCard = ({ attendance, onClick }) => {
   const [present, setPresent] = useState(attendance.present);
 
   useEffect(() => {
@@ -21,11 +21,11 @@ const AttendanceCard = ({ attendance }) => {
       </div>
       <div>
         {present ? (
-          <button onClick={() => setPresent(false)} className={`${styles.checkBox}`}>
+          <button onClick={() => onClick()} className={`${styles.checkBox}`}>
             <CheckSquareFill size={25} color='#3fbc36' />
           </button>
         ) : (
-          <button onClick={() => setPresent(true)} className={`${styles.checkBox}`}>
+          <button onClick={() => onClick()} className={`${styles.checkBox}`}>
             <Square size={25} color='#f73100' />
           </button>
         )}

@@ -152,6 +152,26 @@ def getAttendance():
 
     return dumps(attendanceObj)
 
+@app.route('/api/v1/attendance/update', methods=["POST", "OPTIONS"])
+@cross_origin(headers='Content-Type')
+def getUpdateAttendance():
+  if request.method == 'POST':
+    attendance = Attendance(attendanceCollection)
+
+    data = request.get_json()
+    studentId = data['studentId']
+    courseCode = data['courseCode']
+    attendanceId = data['attendanceId']
+
+    date = helpers.getDate()
+    res = attendance.updateOne(courseCode, attendanceId, studentId, date)
+    resObj = loads(res)
+    
+    for student in resObj[0]['classAttendance']['allStudents']:
+      student.pop('encodings')
+
+    return dumps(resObj)
+
 @app.route('/api/v1/students', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')
 def getStudents():

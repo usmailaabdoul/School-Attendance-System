@@ -1,7 +1,7 @@
 .profileImage {
   width        : 55px;
   height       : 55px;
-  border-radius: 15px
+  border-radius: 8px
 }
 
 .profileContainer {
@@ -9,9 +9,9 @@
   align-items        : center;
   /* background-color: #fff; */
   padding            : 7px 10px;
-  border-radius      : 20px;
+  border-radius      : 10px;
   width              : 100%;
-  margin             : 10px 0px;
+  margin             : 7px 0px;
 }
 
 .profileBody {
@@ -20,12 +20,12 @@
 }
 
 .profileName {
-  font-size: 18px;
+  font-size: 14px;
   margin   : 0;
 }
 
 .profileMatricule {
-  font-size: 14px;
+  font-size: 18px;
   /* margin: 0; */
 }
 

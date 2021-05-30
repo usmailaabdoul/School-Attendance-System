@@ -29,6 +29,17 @@ class AttendanceApi {
       throw e
     }
   }
+
+  async updateStudentAttendance(obj) {
+    try {
+      let res = await fetch(`${url}/attendance/update`, {...config, body: JSON.stringify(obj)})
+
+      res = res.json()
+      return res
+    } catch (e) {
+      throw e
+    }
+  }
 }
 
 const attendanceApi = new AttendanceApi();

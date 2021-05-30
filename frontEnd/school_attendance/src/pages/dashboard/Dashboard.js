@@ -5,6 +5,7 @@ import { CameraVideo, CameraVideoOffFill, PauseFill, PlayFill } from 'react-boot
 import { AttendanceCard, SortButton } from '../../components';
 
 import faceRecognitionApi from '../../apis/faceRecognition'
+import attendanceApi from '../../apis/attendance'
 import Swal from 'sweetalert2'
 
 import styles from './dashboard.module.css';
@@ -15,24 +16,25 @@ const Dashboard = (props) => {
   const [imagesUrls, setImagesUrls] = useState([]);
   const [startAttendance, setStartAttendance] = useState(false);
   const [paused, setPaused] = useState(false);
-  const [attendance, setAttendance] = useState([
-    {name: 'Usmaila Abdoul', matricule: 'FE17A090', email: 'ismaelabdul77@gmail.com', present: false, photoUrl: 'https://cdn.futura-sciences.com/buildsv6/images/mediumoriginal/6/5/2/652a7adb1b_98148_01-intro-773.jpg'}
-  ]);
+  const [attendance, setAttendance] = useState([]);
   const [sortBy, setSortBy] = useState('present');
+  const [sortedAttendance, setSortedAttendance] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [attendanceInfo, setAttendanceInfo] = useState({});
 
   let timer = createRef();
 
-  // useEffect(() => {
-  //   if (sortBy === 'present') {
-  //     attendance.sort((x, y) => { return y.present - x.present });
-  //     setAttendance([...attendance])
-  //   } else if (sortBy === 'absent') {
-  //     attendance.sort((x, y) => { return x.present - y.present });
-  //     setAttendance([...attendance])
-  //   }
+  useEffect(() => {
+    if (sortBy === 'present') {
+      attendance.sort((x, y) => { return y.present - x.present });
+      setSortedAttendance([...attendance])
+    } else if (sortBy === 'absent') {
+      attendance.sort((x, y) => { return x.present - y.present });
+      setSortedAttendance([...attendance])
+    }
 
-  // }, [sortBy])
+  }, [attendance, sortBy])
 
   const capture = React.useCallback(async () => {
     const imageSrc = webcamRef.current.getScreenshot();
@@ -42,8 +44,9 @@ const Dashboard = (props) => {
     try {
       let obj = { courseCode: 'CEF304', image: newStr[1] }
       let res = await faceRecognitionApi.findFaces(obj)
-      console.log({ res });
+      // console.log({ res: res._id.$oid });
       setAttendance(res.classAttendance.allStudents)
+      setAttendanceInfo(res)
     } catch (error) {
       console.log({ error })
     }
@@ -105,6 +108,30 @@ const Dashboard = (props) => {
     }
   }
 
+  const searchStudents = (e) => {
+    let text = e.target.value;
+    setSearchText(text)
+
+    let filteredAttendance = attendance.filter((att) => {
+      let _att = `${att.matricule.toLowerCase()}`;
+      let _text = text.toLowerCase();
+
+      return _att.indexOf(_text) > -1;
+    });
+    setSortedAttendance(filteredAttendance);
+  }
+
+  const updateAttendance = async (att) => {
+    try {
+      let obj = { courseCode: 'CEF304', studentId: att._id.$oid, attendanceId: attendanceInfo._id.$oid }
+      let res = await attendanceApi.updateStudentAttendance(obj)
+      console.log({ res });
+      setAttendance(res[0].classAttendance.allStudents)
+    } catch (error) {
+      console.log({ error })
+    }
+  }
+
   return (
     <div className={`${styles.dashboardContainer} m-3 d-flex flex-column`}>
       <div className="p-2 mb-2">
@@ -131,7 +158,7 @@ const Dashboard = (props) => {
                 ref={webcamRef}
                 screenshotFormat="image/jpg"
                 height={'100%'}
-                style={{ borderRadius: 40 }}
+                style={{ borderRadius: 20 }}
               />
             ) : (
               <div className={`${styles.notRecordingBox}`}>
@@ -166,8 +193,9 @@ const Dashboard = (props) => {
           </div>
         </div>
         <div className={`d-flex flex-column ml-4 ${styles.attendanceSection}`}>
-          <div className='d-flex align-items-center justify-content-between  ml-4 mx-2 mt-4'>
+          <div className='d-flex align-items-center justify-content-between  ml-4 mx-2 mt-3 mb-1'>
             <h5 className="text-success ">Attendance</h5>
+            <input placeholder='Search by Matrciule' className={`input ${styles.searchInput}`} type="text" value={searchText} onChange={(e) => searchStudents(e)}/>
             <SortButton
               sortBy={sortBy}
               onClick={(value) => setSortBy(value)}
@@ -175,10 +203,11 @@ const Dashboard = (props) => {
           </div>
           <div className={`mx-4 ${styles.studentsPresent}`}>
             <div className="d-flex align-items-center flex-wrap">
-              {attendance.map((att, index) => (
+              {sortedAttendance.map((att, index) => (
                 <AttendanceCard
                   key={index}
                   attendance={att}
+                  onClick={() => updateAttendance(att)}
                 />
               ))}
             </div>

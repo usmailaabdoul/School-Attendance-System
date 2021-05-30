@@ -38,3 +38,23 @@ class Attendance():
     attendance = dumps(attendance)
 
     return attendance
+
+  def updateOne(self, courseCode, attendanceId, studentId, date):
+    attendance = self.attendanceCollection.find({'$and': [{'date': {'$eq': date}}, {'courseCode': {'$eq': courseCode}}] })
+  
+    newAttendance = []
+    for student in attendance[0]['classAttendance']['allStudents']:
+      if (student['_id'] == ObjectId(studentId)):
+        presents = not student["present"]
+        student["present"] = presents
+      
+      newAttendance.append(student)
+
+    unknownStudents = attendance[0]['classAttendance']['unknownStudents']
+    classAttendance = {'allStudents': newAttendance, 'unknownStudents': unknownStudents}
+    query = {'_id': ObjectId(attendanceId)}
+    newValues = { "$set": { "classAttendance": classAttendance }}
+
+    self.attendanceCollection.update_one(query, newValues)  
+
+    return dumps(attendance)

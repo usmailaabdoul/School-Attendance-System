@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { CameraVideo, CameraVideoOffFill, PauseFill, PlayFill } from 'react-bootstrap-icons';
 import ReactTable from 'react-table-v6'
 import 'react-table-v6/react-table.css'
 
@@ -23,7 +22,8 @@ const Attendance = (props) => {
     try {
       let obj = { courseCode: 'CEF304' }
       let res = await attendanceApi.getAttendance(obj)
-      // console.log({ res });
+      console.log({ res });
+      res = res.reverse()
       setAttendance(res)
       setIsLoading(false)
     } catch (error) {
@@ -122,7 +122,7 @@ const Attendance = (props) => {
                         }
                       ]}
                       defaultPageSize={10}
-                      style={{ textAlign: 'center' }}
+                      style={{ textAlign: 'center', height: '830px' }}
                       loadingText='Loading Products ...'
                       noDataText='No products found'
                       className="-highlight -striped rt-rows-height ReactTable"
