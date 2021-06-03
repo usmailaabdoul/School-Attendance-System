@@ -18,3 +18,10 @@ class Lecturers():
     # print('lecturer', lecturer)
     
     return lecturer
+
+  def getLecturerByEmail(self, email):
+    lecturer = self.lecturerCollection.find_one({'email': email})
+    # lecturer = dumps(lecturer)
+    # print('lecturer', lecturer)
+    
+    return lecturer

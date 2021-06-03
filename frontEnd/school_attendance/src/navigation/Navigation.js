@@ -9,7 +9,7 @@ import styles from './Navigation.module.css';
 const Navigation = ({ token }) => {
   return (
     <Router>
-      {!token.length > 0 ? ( // if the admin is not logged routes shouldn't be available.
+      {token.length > 0 ? ( // if the admin is not logged routes shouldn't be available.
         <div className={styles.homeContainer}>
           <div className={styles.homeSidebar}>
             <SideBar />

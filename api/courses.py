@@ -18,3 +18,10 @@ class Courses():
     # print('course', course)
     
     return course
+
+  def getAllCourses(self):
+      courses = self.courseCollection.find()
+      courses = dumps(courses)
+      # print('course', course)
+      
+      return courses

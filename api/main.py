@@ -188,7 +188,7 @@ def getStudents():
 
     return dumps(studentsObj)
 
-@app.route('/api/v1/addLecturer', methods=["POST", "OPTIONS"])
+@app.route('/api/v1/lecturer/signup', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')
 def addNewLecturer():
   if request.method == 'POST':
@@ -197,16 +197,34 @@ def addNewLecturer():
     data = request.get_json()
     name  = data['name']
     email  = data['email']
-    courseName = data['courseName']
-    courseCode = data['courseCode']
+    courses = data['courses']
+    password = data['password']
 
-    obj = {'name': name, 'email': email, 'courseName': courseName, 'courseCode': courseCode}
+    firebase.createUser(email, password)
+    obj = {'name': name, 'email': email, 'courses': courses}
     lecturer.addNewLecturer(obj)
 
     res = jsonify('New Lecturer added succesfully')
     return res
 
-@app.route('/api/v1/addCourse', methods=["POST", "OPTIONS"])
+@app.route('/api/v1/lecturer/login', methods=["POST", "OPTIONS"])
+@cross_origin(headers='Content-Type')
+def loginLecturer():
+  if request.method == 'POST':
+    lecturer = Lecturers(lecturerCollection)
+
+    data = request.get_json()
+    email  = data['email']
+    password = data['password']
+
+    user = firebase.login(email, password)
+    lecturer = lecturer.getLecturerByEmail(email)
+    res = {}
+    res['user'] = lecturer
+    res['token'] = user['idToken']
+    return dumps(res)
+
+@app.route('/api/v1/course', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')
 def addNewCourse():
   if request.method == 'POST':
@@ -221,6 +239,16 @@ def addNewCourse():
 
     res = jsonify('New course added succesfully')
     return res
+
+@app.route('/api/v1/courses', methods=["GET", "OPTIONS"])
+@cross_origin(headers='Content-Type')
+def getAllCourses():
+  if request.method == 'GET':
+    course = Courses(courseCollection)
+
+    courses = course.getAllCourses()
+
+    return courses
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)

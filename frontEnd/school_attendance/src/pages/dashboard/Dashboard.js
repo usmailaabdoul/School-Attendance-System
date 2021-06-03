@@ -22,6 +22,7 @@ const Dashboard = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [attendanceInfo, setAttendanceInfo] = useState({});
+  const [devices, setDevices] = useState([]);
 
   let timer = createRef();
 
@@ -60,6 +61,19 @@ const Dashboard = (props) => {
       }, 3000);
     }
   }, [capture, paused, startAttendance, timer]);
+
+  const handleDevices = React.useCallback(
+    mediaDevices =>
+      setDevices(mediaDevices.filter(({ kind }) => kind === "videoinput")),
+    [setDevices]
+  );
+
+  useEffect(
+    () => {
+      navigator.mediaDevices.enumerateDevices().then(handleDevices);
+    },
+    [handleDevices]
+  );
 
   const closeWebCam = () => {
     Swal.fire({
@@ -132,6 +146,7 @@ const Dashboard = (props) => {
     }
   }
 
+  console.log({devices})
   return (
     <div className={`${styles.dashboardContainer} m-3 d-flex flex-column`}>
       <div className="p-2 mb-2">
@@ -159,6 +174,7 @@ const Dashboard = (props) => {
                 screenshotFormat="image/jpg"
                 height={'100%'}
                 style={{ borderRadius: 20 }}
+                videoConstraints={{ deviceId: devices[0].deviceId }}
               />
             ) : (
               <div className={`${styles.notRecordingBox}`}>

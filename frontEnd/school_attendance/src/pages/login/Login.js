@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Swal from 'sweetalert2'
-// import apis from '../../apis/apis'
 import { Link } from 'react-router-dom'
 import { connect } from "react-redux";
 
+import authApi from '../../apis/auth'
 import { setUser, setToken } from '../../redux/actions/authActions'
 import styles from './login.module.css'
 
@@ -13,21 +13,15 @@ const Login = (props) => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  /**
-   * attempts to log a user in, only if their credentials are correct
-   *
-   * @param {*} event
-   */
   const login = async (event) => {
 
     setIsLoading(true)
     event.preventDefault()
     try {
-      let res;
-      // let res = await apis.authApi.login({
-      //   email,
-      //   password
-      // })
+      let res = await authApi.login({
+        email,
+        password
+      })
       console.log({res})
 
       props.setToken(res.token)
@@ -49,12 +43,7 @@ const Login = (props) => {
       })
     }
   }
-
-  /**
-   *
-   *
-   * @return {*} 
-   */
+  
   const checkDisabled = () => { 
     return  (password === '' || email === '');
   }
