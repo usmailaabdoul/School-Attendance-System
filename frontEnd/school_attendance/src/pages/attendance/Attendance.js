@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import ReactTable from 'react-table-v6'
-import 'react-table-v6/react-table.css'
-
-import { } from '../../components';
+import 'react-table-v6/react-table.css';
+import { connect } from "react-redux";
 
 import attendanceApi from '../../apis/attendance'
 
 import styles from './attendance.module.css';
 
-
-const Attendance = (props) => {
+const Attendance = ({user}) => {
   const [attendance, setAttendance] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,8 +39,8 @@ const Attendance = (props) => {
             <div class="dropdown">
               <span>
                 <a href="###" class="d-flex align-items-center text-dark text-decoration-none">
-                  <img src="https://github.com/mdo.png" alt="" width="40" height="40" class="rounded-circle me-2" />
-                  <strong>Abdoul ila</strong>
+                  {/* <img src="https://github.com/mdo.png" alt="" width="40" height="40" class="rounded-circle me-2" /> */}
+                  <h4>{user.name}</h4>
                 </a>
               </span>
             </div>
@@ -63,7 +61,7 @@ const Attendance = (props) => {
               : (
                 <>
                   <div className="d-flex justify-content-center align-items-center my-2 h4">
-                    Attendance for CEF304
+                    Attendance for {user.courses[0].courseName}: {user.courses[0].courseCode}
                     </div>
                   <div className={`shadow-sm ${styles.attendanceTable}`}>
                     <ReactTable
@@ -75,7 +73,8 @@ const Attendance = (props) => {
                         {
                           Header: "Date",
                           accessor: "date",
-                          className: 'text-center'
+                          className: 'text-center',
+                          maxWidth: 400,
                         },
                         {
                           Header: "Attendance",
@@ -84,9 +83,10 @@ const Attendance = (props) => {
                             return (
                               <ReactTable
                                 data={row.original.classAttendance.allStudents}
-                                showPagination={false}
+                                showPagination={true}
                                 showPageSizeOptions={false}
                                 minRows={0}
+                                defaultPageSize={10}
                                 columns={[
                                   {
                                     Header: "Name",
@@ -121,8 +121,8 @@ const Attendance = (props) => {
                           }
                         }
                       ]}
-                      defaultPageSize={10}
-                      style={{ textAlign: 'center', height: '830px' }}
+                      defaultPageSize={5}
+                      style={{ textAlign: 'center', height: '950px', alignItems: 'center' }}
                       loadingText='Loading Products ...'
                       noDataText='No products found'
                       className="-highlight -striped rt-rows-height ReactTable"
@@ -136,4 +136,8 @@ const Attendance = (props) => {
   )
 }
 
-export default Attendance
+const mapStatesToProps = ({ auth }) => ({
+  user: auth.user
+})
+
+export default connect(mapStatesToProps, null)(Attendance);

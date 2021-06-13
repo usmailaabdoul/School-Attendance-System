@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import ReactTable from 'react-table-v6'
 import 'react-table-v6/react-table.css'
-
-import { } from '../../components';
+import { connect } from "react-redux";
 
 import studentsApi from '../../apis/students'
 
 import styles from './students.module.css';
 
 
-const Students = (props) => {
+const Students = ({user}) => {
+  console.log({user})
   const [students, setStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -39,8 +39,8 @@ const Students = (props) => {
             <div class="dropdown">
               <span>
                 <a href="###" class="d-flex align-items-center text-dark text-decoration-none">
-                  <img src="https://github.com/mdo.png" alt="" width="40" height="40" class="rounded-circle me-2" />
-                  <strong>Abdoul ila</strong>
+                  {/* <img src="https://github.com/mdo.png" alt="" width="40" height="40" class="rounded-circle me-2" /> */}
+                  <h4>{user.name}</h4>
                 </a>
               </span>
             </div>
@@ -61,7 +61,7 @@ const Students = (props) => {
               : (
                 <>
                   <div className="d-flex justify-content-center align-items-center my-2 h4">
-                    Students Offering CEF304
+                    Students Offering {user.courses[0].courseName}: {user.courses[0].courseCode}
                     </div>
                   <div className={`shadow-sm ${styles.attendanceTable}`}>
                     <ReactTable
@@ -76,7 +76,7 @@ const Students = (props) => {
                           Cell: row => {
                             return (
                               <div>
-                                <img src={row.original.photoUrl} alt='profile' style={{width: '75px', height: '75px'}}/>
+                                <img src={row.original.photoUrl} alt='profile' style={{width: '55px', height: '55px', borderRadius: '10px'}}/>
                               </div>
                             )
                           }
@@ -102,8 +102,8 @@ const Students = (props) => {
                           className: 'text-center'
                         },
                       ]}
-                      defaultPageSize={10}
-                      style={{ textAlign: 'center', alignItems: 'center' }}
+                      defaultPageSize={20}
+                      style={{ textAlign: 'center', alignItems: 'center', height: '950px' }}
                       loadingText='Loading Products ...'
                       noDataText='No products found'
                       className="-highlight -striped rt-rows-height ReactTable"
@@ -117,4 +117,8 @@ const Students = (props) => {
   )
 }
 
-export default Students
+const mapStatesToProps = ({ auth }) => ({
+  user: auth.user
+})
+
+export default connect(mapStatesToProps, null)(Students);

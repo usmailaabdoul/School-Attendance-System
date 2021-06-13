@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, createRef } from 'react'
 import Webcam from "react-webcam";
-import { CameraVideo, CameraVideoOffFill, PauseFill, PlayFill } from 'react-bootstrap-icons';
+import { CameraVideo, CameraVideoOffFill, PauseFill, PlayFill, ChevronUp, ChevronDown } from 'react-bootstrap-icons';
+import { connect } from "react-redux";
 
 import { AttendanceCard, SortButton } from '../../components';
 
@@ -11,9 +12,8 @@ import Swal from 'sweetalert2'
 import styles from './dashboard.module.css';
 
 
-const Dashboard = (props) => {
+const Dashboard = ({ user }) => {
   const webcamRef = useRef(null);
-  const [imagesUrls, setImagesUrls] = useState([]);
   const [startAttendance, setStartAttendance] = useState(false);
   const [paused, setPaused] = useState(false);
   const [attendance, setAttendance] = useState([]);
@@ -23,6 +23,7 @@ const Dashboard = (props) => {
   const [searchText, setSearchText] = useState('');
   const [attendanceInfo, setAttendanceInfo] = useState({});
   const [devices, setDevices] = useState([]);
+  const [expanded, setExpanded] = useState(false);
 
   let timer = createRef();
 
@@ -43,7 +44,7 @@ const Dashboard = (props) => {
     let newStr = imageSrc.split(',');
 
     try {
-      let obj = { courseCode: 'CEF304', image: newStr[1] }
+      let obj = { courseCode: user.courses[0].courseCode, image: newStr[1] }
       let res = await faceRecognitionApi.findFaces(obj)
       // console.log({ res: res._id.$oid });
       setAttendance(res.classAttendance.allStudents)
@@ -92,7 +93,6 @@ const Dashboard = (props) => {
         }
         setStartAttendance(false);
         setPaused(false)
-        setImagesUrls([])
       }
     })
   }
@@ -110,7 +110,7 @@ const Dashboard = (props) => {
 
   const startTakingAttendance = async () => {
     setIsLoading(true)
-    let obj = { courseCode: 'CEF304' }
+    let obj = { courseCode: user.courses[0].courseCode }
     try {
       let res = await faceRecognitionApi.startAttendance(obj)
       console.log({ res });
@@ -137,7 +137,7 @@ const Dashboard = (props) => {
 
   const updateAttendance = async (att) => {
     try {
-      let obj = { courseCode: 'CEF304', studentId: att._id.$oid, attendanceId: attendanceInfo._id.$oid }
+      let obj = { courseCode: user.courses[0].courseCode, studentId: att._id.$oid, attendanceId: attendanceInfo._id.$oid }
       let res = await attendanceApi.updateStudentAttendance(obj)
       console.log({ res });
       setAttendance(res[0].classAttendance.allStudents)
@@ -146,7 +146,7 @@ const Dashboard = (props) => {
     }
   }
 
-  console.log({devices})
+  // console.log({devices})
   return (
     <div className={`${styles.dashboardContainer} m-3 d-flex flex-column`}>
       <div className="p-2 mb-2">
@@ -156,8 +156,8 @@ const Dashboard = (props) => {
             <div class="dropdown">
               <span>
                 <a href="###" class="d-flex align-items-center text-dark text-decoration-none">
-                  <img src="https://github.com/mdo.png" alt="" width="40" height="40" class="rounded-circle me-2" />
-                  <strong>Abdoul ila</strong>
+                  {/* <img src="https://github.com/mdo.png" alt="" width="40" height="40" class="rounded-circle me-2" /> */}
+                  <h4>{user.name}</h4>
                 </a>
               </span>
             </div>
@@ -174,7 +174,7 @@ const Dashboard = (props) => {
                 screenshotFormat="image/jpg"
                 height={'100%'}
                 style={{ borderRadius: 20 }}
-                videoConstraints={{ deviceId: devices[0].deviceId }}
+                videoConstraints={{ deviceId: devices[1].deviceId }}
               />
             ) : (
               <div className={`${styles.notRecordingBox}`}>
@@ -211,13 +211,13 @@ const Dashboard = (props) => {
         <div className={`d-flex flex-column ml-4 ${styles.attendanceSection}`}>
           <div className='d-flex align-items-center justify-content-between  ml-4 mx-2 mt-3 mb-1'>
             <h5 className="text-success ">Attendance</h5>
-            <input placeholder='Search by Matrciule' className={`input ${styles.searchInput}`} type="text" value={searchText} onChange={(e) => searchStudents(e)}/>
+            <input placeholder='Search by Matrciule' className={`input ${styles.searchInput}`} type="text" value={searchText} onChange={(e) => searchStudents(e)} />
             <SortButton
               sortBy={sortBy}
               onClick={(value) => setSortBy(value)}
             />
           </div>
-          <div className={`mx-4 ${styles.studentsPresent}`}>
+          <div className={`mx-4 ${styles.studentsPresent}`} style={expanded ? { height: '600px' } : { flex: 1 }}>
             <div className="d-flex align-items-center flex-wrap">
               {sortedAttendance.map((att, index) => (
                 <AttendanceCard
@@ -229,22 +229,25 @@ const Dashboard = (props) => {
             </div>
           </div>
 
-          <h5 className="text-danger mx-4 my-1">Unknown Students</h5>
-          <div className={`mx-4 ${styles.studentsAbsent}`}>
+          <div className="d-flex justify-content-between align-items-center mx-4 my-2">
+            <h5 className="text-danger m-0">Unknown Students</h5>
+            <div onClick={() => setExpanded(!expanded)} className="m-0">
+              {expanded ? <ChevronDown /> : <ChevronUp />}
+            </div>
+          </div>
+          <div className={`mx-4 ${styles.studentsAbsent}`} style={expanded ? { height: '250px' } : { height: '20px' }}>
             <div className="d-flex align-items-center flex-wrap">
-              {imagesUrls && (
-                imagesUrls.map((img, index) => (
-                  <div key={index} className={`${styles.studentsImageWrapper}`}>
-                    <img
-                      alt="students"
-                      className={`${styles.studentsImage}`}
-                      src={img}
-                    />
-                    <h6 className="m-0">usmaila abdoul</h6>
-                    <h6 className="m-0">FE17A090</h6>
-                  </div>
-                ))
-              )}
+              {Array(0).fill(5).map((img, index) => (
+                <div key={index} className={`${styles.studentsImageWrapper}`}>
+                  <img
+                    alt="students"
+                    className={`${styles.studentsImage}`}
+                    src={img}
+                  />
+                  <h6 className="m-0">usmaila abdoul</h6>
+                  <h6 className="m-0">FE17A090</h6>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -253,4 +256,8 @@ const Dashboard = (props) => {
   )
 }
 
-export default Dashboard
+const mapStatesToProps = ({ auth }) => ({
+  user: auth.user
+})
+
+export default connect(mapStatesToProps, null)(Dashboard);
