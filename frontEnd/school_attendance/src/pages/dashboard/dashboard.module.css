@@ -5,7 +5,7 @@
 }
 
 .webCamContainer {
-  flex                   : 5.5;
+  flex                   : 5;
   background-color       : #EBEEF2;
   border-top-left-radius : 20px;
   border-top-right-radius: 20px;
@@ -43,6 +43,7 @@
 }
 
 .studentsAbsent {
+  height  : 190px;
   overflow: auto;
 }
 

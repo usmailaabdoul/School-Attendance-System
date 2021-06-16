@@ -172,7 +172,7 @@ const Dashboard = ({ user }) => {
                 audio={false}
                 ref={webcamRef}
                 screenshotFormat="image/jpg"
-                height={'100%'}
+                height={'98%'}
                 style={{ borderRadius: 20 }}
                 videoConstraints={{ deviceId: devices[1].deviceId }}
               />
@@ -217,7 +217,7 @@ const Dashboard = ({ user }) => {
               onClick={(value) => setSortBy(value)}
             />
           </div>
-          <div className={`mx-4 ${styles.studentsPresent}`} style={expanded ? { height: '600px' } : { flex: 1 }}>
+          <div className={`mx-4 ${styles.studentsPresent}`} style={expanded ? { height: '620px' } : { height: '850px' }}>
             <div className="d-flex align-items-center flex-wrap">
               {sortedAttendance.map((att, index) => (
                 <AttendanceCard
