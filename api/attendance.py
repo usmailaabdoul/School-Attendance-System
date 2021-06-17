@@ -25,9 +25,8 @@ class Attendance():
     return attendance
   
   def updateStudentAttendance(self, id, obj):
-    classAttendance = {'allStudents': obj, 'unknownStudents': []}
     query = {'_id': ObjectId(id)}
-    newValues = { "$set": { "classAttendance": classAttendance } }
+    newValues = { "$set": { "classAttendance": obj } }
 
     attendance = self.attendanceCollection.update_one(query, newValues)
     

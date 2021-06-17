@@ -4,7 +4,6 @@ from bson.json_util import dumps, loads
 from flask_cors import CORS, cross_origin
 from flask_pymongo import PyMongo
 
-import base64
 import os
 
 from lecturers import Lecturers

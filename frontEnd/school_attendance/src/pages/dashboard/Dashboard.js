@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, createRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Webcam from "react-webcam";
 import { CameraVideo, CameraVideoOffFill, PauseFill, PlayFill, ChevronUp, ChevronDown } from 'react-bootstrap-icons';
 import { connect } from "react-redux";
@@ -10,7 +10,6 @@ import attendanceApi from '../../apis/attendance'
 import Swal from 'sweetalert2'
 
 import styles from './dashboard.module.css';
-
 
 const Dashboard = ({ user }) => {
   const webcamRef = useRef(null);
@@ -24,8 +23,9 @@ const Dashboard = ({ user }) => {
   const [attendanceInfo, setAttendanceInfo] = useState({});
   const [devices, setDevices] = useState([]);
   const [expanded, setExpanded] = useState(false);
+  const [unknownStudents, setUnknownStudents] = useState([]);
 
-  let timer = createRef();
+  let timer = useRef();
 
   useEffect(() => {
     if (sortBy === 'present') {
@@ -41,27 +41,31 @@ const Dashboard = ({ user }) => {
   const capture = React.useCallback(async () => {
     const imageSrc = webcamRef.current.getScreenshot();
 
-    let newStr = imageSrc.split(',');
+    if (imageSrc) {
+      let newStr = imageSrc.split(',');
 
-    try {
-      let obj = { courseCode: user.courses[0].courseCode, image: newStr[1] }
-      let res = await faceRecognitionApi.findFaces(obj)
-      // console.log({ res: res._id.$oid });
-      setAttendance(res.classAttendance.allStudents)
-      setAttendanceInfo(res)
-    } catch (error) {
-      console.log({ error })
+      try {
+        let obj = { courseCode: user.courses[0].courseCode, image: newStr[1] }
+        let res = await faceRecognitionApi.findFaces(obj)
+        console.log({ res });
+        setAttendance(res.classAttendance.allStudents)
+        setUnknownStudents(res.classAttendance.unknownStudents)
+        setAttendanceInfo(res)
+      } catch (error) {
+        console.log({ error })
+      }
     }
-  }, []);
+  }, [user.courses]);
 
   useEffect(() => {
     if (startAttendance && !paused) {
-      timer.current = setTimeout(() => {
+      let t = setInterval(() => {
         console.log('its been 3secs')
         capture()
       }, 3000);
+      timer.current = t;
     }
-  }, [capture, paused, startAttendance, timer]);
+  }, [capture, paused, startAttendance]);
 
   const handleDevices = React.useCallback(
     mediaDevices =>
@@ -88,7 +92,7 @@ const Dashboard = ({ user }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         if (timer.current) {
-          clearTimeout(timer.current)
+          clearInterval(timer.current)
           timer.current = 0
         }
         setStartAttendance(false);
@@ -99,7 +103,7 @@ const Dashboard = ({ user }) => {
 
   const pauseWebCam = () => {
     if (timer.current) {
-      clearTimeout(timer.current)
+      clearInterval(timer.current)
       timer.current = 0
     }
     setPaused(true);
@@ -146,7 +150,6 @@ const Dashboard = ({ user }) => {
     }
   }
 
-  // console.log({devices})
   return (
     <div className={`${styles.dashboardContainer} m-3 d-flex flex-column`}>
       <div className="p-2 mb-2">
@@ -174,7 +177,7 @@ const Dashboard = ({ user }) => {
                 screenshotFormat="image/jpg"
                 height={'98%'}
                 style={{ borderRadius: 20 }}
-                videoConstraints={{ deviceId: devices[1].deviceId }}
+              // videoConstraints={{ deviceId: devices[1].deviceId }}
               />
             ) : (
               <div className={`${styles.notRecordingBox}`}>
@@ -237,15 +240,13 @@ const Dashboard = ({ user }) => {
           </div>
           <div className={`mx-4 ${styles.studentsAbsent}`} style={expanded ? { height: '250px' } : { height: '20px' }}>
             <div className="d-flex align-items-center flex-wrap">
-              {Array(0).fill(5).map((img, index) => (
+              {unknownStudents.map((img, index) => (
                 <div key={index} className={`${styles.studentsImageWrapper}`}>
                   <img
                     alt="students"
                     className={`${styles.studentsImage}`}
-                    src={img}
+                    src={img.url}
                   />
-                  <h6 className="m-0">usmaila abdoul</h6>
-                  <h6 className="m-0">FE17A090</h6>
                 </div>
               ))}
             </div>

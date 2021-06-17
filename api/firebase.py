@@ -1,5 +1,7 @@
 import pyrebase
 import pathlib
+import datetime
+import os
 
 config =  {
     "apiKey": "AIzaSyBjSeDK_QDuJa9KNN-KFC08BzpaqHBMvvQ",
@@ -36,4 +38,23 @@ def uploadImage(path):
   user = login(email, password)
   url = storage.child(f'profileImages/{name.name}').get_url(user['idToken'])
   
+  return url
+
+def uploadUnknownStudents(path):
+  firebase = pyrebase.initialize_app(config)
+  storage = firebase.storage()
+  
+  name = datetime.datetime.now()
+  storage.child(f'unknownStudents/{name}').put(path)
+
+  email = 'ismaelabdul77@gmail.com'
+  password = 'password123'
+  user = login(email, password)
+  url = storage.child(f'unknownStudents/{name}').get_url(user['idToken'])
+  
+  if os.path.exists(f'{path}'):
+    os.remove(f'{path}')
+  else:
+    print("The file does not exist")
+
   return url

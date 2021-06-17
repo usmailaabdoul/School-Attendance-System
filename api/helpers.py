@@ -4,6 +4,8 @@ import face_recognition
 import datetime
 import base64
 
+import firebase
+
 from bson.json_util import loads, dumps
 
 from PIL import Image
@@ -46,8 +48,8 @@ def findFaces(path, currentClassAttendanceObj):
 
   encodeListKnown = returnEncodings(currentClassAttendanceObj)
 
-  foundFaces = []
   students = currentClassAttendanceObj[0]['classAttendance']['allStudents']
+  unknownStudents = currentClassAttendanceObj[0]['classAttendance']['unknownStudents']
 
   for encodeFace, faceLoc in zip(encodeCurFrame, facesCurFrame):
     matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
@@ -64,15 +66,24 @@ def findFaces(path, currentClassAttendanceObj):
       # students[matchIndexPosition]['faceLocation'] = {'y1': y1, 'x2': x2, 'y2': y2, 'x1': x1}
       # found = {"student": studentsObj[matchIndexPosition], "faceLocation": {'y1': y1, 'x2': x2, 'y2': y2, 'x1': x1}}
       # foundFaces.append(found)
-      
     else:
       y1, x2, y2, x1 = faceLoc
       y1, x2, y2, x1 =  y1* 4, x2 * 4, y2 * 4, x1 * 4
 
+      # crop_img = image[y1:y2,x1:x2]
+      # path = f'api/unknownStudents/tempImg.jpg'
+
+      # cv2.imwrite(path, crop_img)
+      # url = firebase.uploadUnknownStudents(path)
+      # std = {'url': url}
+      # unknownStudents.append(std)
+      
+      # print(url)
       # unknown = {"unknownStudent": currentClassAttendanceObj[matchIndexPosition], "faceLocation": {'y1': y1, 'x2': x2, 'y2': y2, 'x1': x1}}
       # foundFaces.append(unknown)
 
-  return students
+  attendance = {'allStudents': students, 'unknownStudents': unknownStudents}
+  return attendance
 
 def getDate():
   date = datetime.datetime.now().date() # Date of today
