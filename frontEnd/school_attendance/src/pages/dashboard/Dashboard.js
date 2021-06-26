@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import Webcam from "react-webcam";
 import { CameraVideo, CameraVideoOffFill, PauseFill, PlayFill, ChevronUp, ChevronDown } from 'react-bootstrap-icons';
 import { connect } from "react-redux";
+import { imgSrcToBlob, createObjectURL } from 'blob-util'
 
 import { AttendanceCard, SortButton } from '../../components';
 
@@ -24,6 +25,7 @@ const Dashboard = ({ user }) => {
   const [devices, setDevices] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [unknownStudents, setUnknownStudents] = useState([]);
+  const [dataUrl, setDataUrl] = useState('');
 
   let timer = useRef();
 
@@ -39,23 +41,42 @@ const Dashboard = ({ user }) => {
   }, [attendance, sortBy])
 
   const capture = React.useCallback(async () => {
-    const imageSrc = webcamRef.current.getScreenshot();
+    // const imageSrc = webcamRef.current.getScreenshot();
+    getBase64FromImageUrl('http://127.0.0.1:5000/api/v1/videoFeed')
 
-    if (imageSrc) {
-      let newStr = imageSrc.split(',');
-
-      try {
-        let obj = { courseCode: user.courses[0].courseCode, image: newStr[1] }
-        let res = await faceRecognitionApi.findFaces(obj)
-        console.log({ res });
-        setAttendance(res.classAttendance.allStudents)
-        setUnknownStudents(res.classAttendance.unknownStudents)
-        setAttendanceInfo(res)
-      } catch (error) {
-        console.log({ error })
-      }
+    try {
+      let obj = { courseCode: user.courses[0].courseCode, image: dataUrl }
+      let res = await faceRecognitionApi.findFaces(obj)
+      console.log({ res });
+      setAttendance(res.classAttendance.allStudents)
+      setUnknownStudents(res.classAttendance.unknownStudents)
+      setAttendanceInfo(res)
+    } catch (error) {
+      console.log({ error })
     }
-  }, [user.courses]);
+  }, [dataUrl, user.courses]);
+
+  const getBase64FromImageUrl = url => {
+    const img = new Image();
+
+    img.setAttribute('crossOrigin', 'anonymous');
+
+    img.onload = function () {
+      const canvas = document.createElement('canvas');
+      canvas.width = this.width;
+      canvas.height = this.height;
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(this, 0, 0);
+
+      const dataURL = canvas.toDataURL('image/png');
+
+      console.log(dataURL.replace(/^data:image\/(png|jpg);base64,/, ''));
+      setDataUrl(dataURL.replace(/^data:image\/(png|jpg);base64,/, ''))
+    };
+
+    img.src = url;
+  };
 
   useEffect(() => {
     if (startAttendance && !paused) {
@@ -171,14 +192,17 @@ const Dashboard = ({ user }) => {
         <div className={`d-flex flex-column ${styles.webCamContainer}`}>
           <div className={`bg-white shadow-sm d-flex align-items-center justify-content-center ${styles.webCamWrapper}`}>
             {startAttendance ? (
-              <Webcam
-                audio={false}
-                ref={webcamRef}
-                screenshotFormat="image/jpg"
-                height={'98%'}
-                style={{ borderRadius: 20 }}
-              // videoConstraints={{ deviceId: devices[1].deviceId }}
-              />
+              // <Webcam
+              //   audio={false}
+              //   ref={webcamRef}
+              //   screenshotFormat="image/jpg"
+              //   height={'98%'}
+              //   style={{ borderRadius: 20 }}
+              // // videoConstraints={{ deviceId: devices[1].deviceId }}
+              // />
+              <div style={{ flex: 1, height: '800px' }}>
+                <img id='video_feed' src="http://127.0.0.1:5000/api/v1/videoFeed" alt="videofeed" height='100%' width='100%' />
+              </div>
             ) : (
               <div className={`${styles.notRecordingBox}`}>
                 {isLoading ? (

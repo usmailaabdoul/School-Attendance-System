@@ -1,5 +1,5 @@
 from cv2 import data
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from bson.json_util import dumps, loads
 from flask_cors import CORS, cross_origin
 from flask_pymongo import PyMongo
@@ -31,6 +31,11 @@ attendanceCollection = mongo.db.attendance
 def test():
   res = jsonify('You are able to connect to the server')
   return res
+
+@app.route('/api/v1/videoFeed')
+def video_feed():
+  #Video streaming route. Put this in the src attribute of an img tag
+  return Response(helpers.gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/api/v1/addNewStudent', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')

@@ -4,11 +4,10 @@ import face_recognition
 import datetime
 import base64
 
-import firebase
+from bson.json_util import loads
 
-from bson.json_util import loads, dumps
-
-from PIL import Image
+source = "rtsp://admin:1234@192.168.1.217:554/stream1"
+cap = cv2.VideoCapture(source)
 
 def getEncodings(path):
   image = cv2.imread(f'{path}.jpg')
@@ -96,3 +95,18 @@ def base64toImg(img_data, path):
 
   with open(f'{path}.jpg', 'wb') as f:
     f.write(imgdata)
+
+def gen_frames():
+  while True:
+    success, frame = cap.read()
+
+    if not success:
+        break
+    else:
+      if frame.shape:
+        frame = cv2.resize(frame, (640,360))
+
+        ret, buffer = cv2.imencode('.jpg', frame)
+        frame = buffer.tobytes()
+        yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
