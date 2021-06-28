@@ -110,8 +110,8 @@ const Register = (props) => {
             })}
           </Form.Control>
         </Form.Group>
-        <button onClick={() => addToRoles()} className="btn btn-primary text-center w-25 ml-2"><span
-              className="h6">Add</span></button>
+        <button onClick={() => addToRoles()} className={`${styles.button} w-25 ml-2 p-2`}><span
+              className="h5">Add</span></button>
         </div>
 
         <div className="row ml-1" style={{color: '#fff'}}>
@@ -144,16 +144,16 @@ const Register = (props) => {
         </div>
         {isLoading ? (
           <div className="d-flex justify-content-center align-items-center mt-2">
-            <div className="spinner-border" style={{ width: '1.5rem', height: '1.5rem', color: '#406df9' }} role="status">
+            <div className="spinner-border" style={{ width: '1.5rem', height: '1.5rem', color: '#165f9c' }} role="status">
             </div>
           </div>
         ) :
           (
-            <button className={`${styles.button} mt-3`} disable={checkDisabled()} onClick={(e) => { !checkDisabled() && register(e) }}>Register</button>
+            <button className={`${styles.button} mt-3 h5`} disable={checkDisabled()} onClick={(e) => { !checkDisabled() && register(e) }}>REGISTER</button>
           )}
 
         <Link to={'/login'}>
-          <button className={`${styles.text_button} mt-3`} type="submit">Already have an account? Login</button>
+          <button className={`${styles.text_button} mt-3 h5`} type="submit">Already have an account? Login</button>
         </Link>
       </div>
     </div>

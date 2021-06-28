@@ -60,16 +60,16 @@ const Login = (props) => {
         </div>
         {isLoading ? (
           <div className="d-flex justify-content-center align-items-center mt-2">
-            <div className="spinner-border" style={{ width: '1.5rem', height: '1.5rem', color: '#406df9' }} role="status">
+            <div className="spinner-border" style={{ width: '1.5rem', height: '1.5rem', color: '#165f9c' }} role="status">
             </div>
           </div>
         ) :
           (
-            <button className={`${styles.button} mt-3`} disable={checkDisabled()} onClick={(e) => { !checkDisabled() && login(e) }}>Login</button>
+            <button className={`${styles.button} mt-3 h5`} disable={checkDisabled()} onClick={(e) => { !checkDisabled() && login(e) }}>Login</button>
           )}
 
         <Link to={'/register'}>
-          <button className={`${styles.text_button} mt-3`} type="submit">Don't have an account? Register</button>
+          <button className={`${styles.text_button} mt-3 h5`} type="submit">Don't have an account? Register</button>
         </Link>
       </div>
     </div>

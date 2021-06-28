@@ -34,35 +34,22 @@ const Students = ({user}) => {
     <div className={`${styles.attendanceContainer} m-3 d-flex flex-column`}>
       <div className="p-2 mb-2">
         <div className="d-flex align-items-center justify-content-between">
-          <h3>Students</h3>
-          <div>
-            <div class="dropdown">
-              <span>
-                <a href="###" class="d-flex align-items-center text-dark text-decoration-none">
-                  {/* <img src="https://github.com/mdo.png" alt="" width="40" height="40" class="rounded-circle me-2" /> */}
-                  <h4>{user.name}</h4>
-                </a>
-              </span>
-            </div>
-          </div>
+          <h3>Students Offering {user.courses[0].courseName}: {user.courses[0].courseCode}</h3>
         </div>
       </div>
       <div className={'d-flex'} style={{ flex: '1' }}>
-        <div className={`d-flex flex-column ${styles.webCamContainer}`}>
+        <div className={`d-flex flex-column ml-3 ${styles.webCamContainer}`}>
 
           {
             isLoading ?
               <div className={'d-flex justify-content-center align-items-center h-100'}>
                 <div class="d-flex justify-content-center align-items-center">
-                  <div class="spinner-border" style={{ width: "3rem", height: "3rem", color: '#406df9' }} role="status">
+                  <div class="spinner-border" style={{ width: "3rem", height: "3rem", color: '#165f9c' }} role="status">
                   </div>
                 </div>
               </div>
               : (
                 <>
-                  <div className="d-flex justify-content-center align-items-center my-2 h4">
-                    Students Offering {user.courses[0].courseName}: {user.courses[0].courseCode}
-                    </div>
                   <div className={`shadow-sm ${styles.attendanceTable}`}>
                     <ReactTable
                       showPagination={true}
@@ -103,7 +90,7 @@ const Students = ({user}) => {
                         },
                       ]}
                       defaultPageSize={20}
-                      style={{ textAlign: 'center', alignItems: 'center', height: '950px' }}
+                      style={{ textAlign: 'center', alignItems: 'center', height: '995px' }}
                       loadingText='Loading Products ...'
                       noDataText='No products found'
                       className="-highlight -striped rt-rows-height ReactTable"

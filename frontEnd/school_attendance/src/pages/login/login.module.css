@@ -4,12 +4,12 @@
   text-align     : center;
   height         : 100vh;
   align-items    : center;
-  background-color: #EBEEF2
+  background-color: #e9f3fc
 }
 
 .loginInnerContainer {
-  padding         : 4rem 6rem;
-  background-color: #1A1A1D;
+  padding         : 4rem 5rem;
+  background-color: #3694e2;
   border-radius   : 8px;
 }
 
@@ -17,6 +17,7 @@
   border-radius: 8px;
   padding      : 15px 20px;
   width        : 100%;
+  border: 1px solid #3694e2;
 }
 
 .heading {
@@ -30,7 +31,7 @@
   color           : #fff !important;
   text-transform  : uppercase;
   text-decoration : none;
-  background-color: #406df9 !important;
+  background-color: #165f9c !important;
   padding         : 20px;
   border-radius   : 5px;
   display         : inline-block;

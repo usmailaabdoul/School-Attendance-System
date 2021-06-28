@@ -190,7 +190,7 @@ const Dashboard = ({ user }) => {
       </div>
       <div className={'d-flex'} style={{ flex: '1' }}>
         <div className={`d-flex flex-column ${styles.webCamContainer}`}>
-          <div className={`bg-white shadow-sm d-flex align-items-center justify-content-center ${styles.webCamWrapper}`}>
+          <div className={`shadow-sm d-flex align-items-center justify-content-center ml-2 ${styles.webCamWrapper}`}>
             {startAttendance ? (
               // <Webcam
               //   audio={false}

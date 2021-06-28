@@ -32,7 +32,7 @@ code {
   padding: 6px;
   font-size: 1em;
   color: var(--secondary-clr);
-  background: #3fbc36;
+  background: #1d7ac9;
   -webkit-transition: all 0.1s ease;
   transition: all 0.1s ease;
   cursor: pointer;
@@ -40,7 +40,7 @@ code {
 }
 
 .ReactTable .-pagination .-btn {
-  background-color: #3fbc36 !important;
+  background-color: #1d7ac9 !important;
   color: white !important;
   border: none;
 }
@@ -51,13 +51,19 @@ code {
 }
 
 .ReactTable .rt-thead.-header {
-  background-color: #3fbc36;
+  background-color: #1d7ac9;
   color: white;
   padding: 7px 0px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 }
 .ReactTable .-pagination .-btn:not([disabled]):hover {
-  background-color: #3fbc36;
+  background-color: #1d7ac9;
   border-color: #fff;
+}
+
+.logout:hover {
+  color: white;
+  background-color: #1d7ac9;
+  border-radius: 10px;
 }

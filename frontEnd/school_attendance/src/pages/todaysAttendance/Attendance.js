@@ -81,38 +81,27 @@ const Attendance = ({ user }) => {
     <div className={`${styles.attendanceContainer} m-3 d-flex flex-column`}>
       <div className="p-2 mb-2">
         <div className="d-flex align-items-center justify-content-between">
-          <h3>Class Attendance</h3>
+          <h3>
+            Attendance for {user.courses[0].courseName}: {user.courses[0].courseCode}
+          </h3>
           <div>
-            <div class="dropdown">
-              <span>
-                <a href="###" class="d-flex align-items-center text-dark text-decoration-none">
-                  {/* <img src="https://github.com/mdo.png" alt="" width="40" height="40" class="rounded-circle me-2" /> */}
-                  <h4>{user.name}</h4>
-                </a>
-              </span>
-            </div>
+            <button onClick={() => setPrintModalOpen(true)} className="btn btn-success h2">Download Attendance</button>
           </div>
         </div>
       </div>
       <div className={'d-flex'} style={{ flex: '1' }}>
-        <div className={`d-flex flex-column ${styles.webCamContainer}`}>
+        <div className={`d-flex flex-column ml-3 ${styles.webCamContainer}`}>
 
           {
             isLoading ?
               <div className={'d-flex justify-content-center align-items-center h-100'}>
                 <div class="d-flex justify-content-center align-items-center">
-                  <div class="spinner-border" style={{ width: "3rem", height: "3rem", color: '#406df9' }} role="status">
+                  <div class="spinner-border" style={{ width: "3rem", height: "3rem", color: '#165f9c' }} role="status">
                   </div>
                 </div>
               </div>
               : (
                 <>
-                  <div className="d-flex justify-content-between align-items-center my-2 mx-5 mt-3">
-                    <h4>
-                      Attendance for {user.courses[0].courseName}: {user.courses[0].courseCode}
-                    </h4>
-                    <button onClick={() => setPrintModalOpen(true)} className="btn btn-primary">Download Attendance</button>
-                  </div>
                   <div className={`shadow-sm ${styles.attendanceTable}`}>
                     <ReactTable
                       data={attendance[attendance.length - 1]?.classAttendance.allStudents ?? []}
@@ -149,7 +138,7 @@ const Attendance = ({ user }) => {
                         }
                       ]}
                       defaultPageSize={20}
-                      style={{ textAlign: 'center', alignItems: 'center', height: '930px' }}
+                      style={{ textAlign: 'center', alignItems: 'center', height: '995px' }}
                       loadingText='Loading Products ...'
                       noDataText='No products found'
                       className="-highlight -striped rt-rows-height ReactTable"
@@ -173,11 +162,11 @@ const Attendance = ({ user }) => {
             <div className="d-flex flex-column align-items-end">
               <h6>Date: {attendance[attendance.length - 1]?.date}</h6>
             </div>
-            <div className="text-center mb-2">
+            <div className="text-center mb-3">
               <h3>Attendance Sheet</h3>
               <h5>Course: {user.courses[0].courseName}, {user.courses[0].courseCode}</h5>
             </div>
-            <table className="table table-bordered table-sm">
+            <table className="table table-bordered table-sm" style={{pageBreakInside: 'auto'}}>
               <thead>
                 <th>#</th>
                 <th>Name</th>
@@ -187,7 +176,7 @@ const Attendance = ({ user }) => {
               </thead>
               <tbody>
                 {attendance[attendance.length - 1]?.classAttendance.allStudents.map((customer, i) => {
-                  return <tr key={i}>
+                  return <tr key={i} style={{pageBreakInside: 'avoid', pageBreakAfter: 'auto'}}>
                     <td>{i + 1}</td>
                     <td>{customer.name}</td>
                     <td>{customer.matricule}</td>
