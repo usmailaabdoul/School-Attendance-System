@@ -167,14 +167,14 @@ const Attendance = ({ user }) => {
               <h5>Course: {user.courses[0].courseName}, {user.courses[0].courseCode}</h5>
             </div>
             <table className="table table-bordered table-sm" style={{pageBreakInside: 'auto'}}>
-              <thead>
+              <thead style={{textAlign: 'center'}}>
                 <th>#</th>
                 <th>Name</th>
                 <th>Matricule</th>
                 <th>Email</th>
                 <th>Present</th>
               </thead>
-              <tbody>
+              <tbody style={{textAlign: 'center'}}>
                 {attendance[attendance.length - 1]?.classAttendance.allStudents.map((customer, i) => {
                   return <tr key={i} style={{pageBreakInside: 'avoid', pageBreakAfter: 'auto'}}>
                     <td>{i + 1}</td>
@@ -182,8 +182,8 @@ const Attendance = ({ user }) => {
                     <td>{customer.matricule}</td>
                     <td>{customer.email}</td>
                     <td>
-                      <div style={customer.present ? { color: '#3fbc36' } : { color: '#f73100' }}>
-                        {customer.present ? 'Present' : 'Absent'}
+                      <div style={customer.present ? { color: '#3fbc36', fontSize: '20px' } : { color: '#f73100', fontSize: '20px' }}>
+                        {customer.present ? '✓' : '✗'}  
                       </div>
                     </td>
                   </tr>
