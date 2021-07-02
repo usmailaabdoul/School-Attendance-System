@@ -110,3 +110,21 @@ def gen_frames():
         frame = buffer.tobytes()
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+def single_frame():
+  source2 = "rtsp://admin:1234@192.168.1.217:554/stream2"
+  cap2 = cv2.VideoCapture(source2)
+  dataUrl = ''
+  while cap2.isOpened():
+    ret, frame = cap2.read()
+
+    if (ret != True):
+        break
+    else:
+      filename = './testimage.jpg'
+      cv2.imwrite(filename, frame)
+
+      with open(filename, "rb") as img_file:
+        dataUrl = base64.b64encode(img_file.read())
+    cap2.release()
+    return dataUrl.decode('utf-8')

@@ -38,6 +38,16 @@ class FaceRecognitionApi {
       throw e
     }
   }
+
+  async getSingleFrame() {
+    try {
+      let res = await fetch(`${url}/singleFrame`, {...config, method: 'GET'})
+      res = res.json()
+      return res
+    } catch (e) {
+      throw e
+    }
+  }
 }
 
 const faceRecognitionApi = new FaceRecognitionApi();

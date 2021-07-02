@@ -37,6 +37,15 @@ def video_feed():
   #Video streaming route. Put this in the src attribute of an img tag
   return Response(helpers.gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@app.route('/api/v1/singleFrame', methods=["GET", "OPTIONS"])
+def single_frame():
+  data = helpers.single_frame()
+  res = {}
+  res['dataUrl'] = data
+  # res = jsonify('done!!!!!')
+  print({res})
+  return dumps(res)
+
 @app.route('/api/v1/addNewStudent', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')
 def addNewStudent():

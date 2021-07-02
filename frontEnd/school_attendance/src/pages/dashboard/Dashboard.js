@@ -41,48 +41,62 @@ const Dashboard = ({ user }) => {
   }, [attendance, sortBy])
 
   const capture = React.useCallback(async () => {
-    // const imageSrc = webcamRef.current.getScreenshot();
-    getBase64FromImageUrl('http://127.0.0.1:5000/api/v1/videoFeed')
-
+    let dataUrl = ''
     try {
-      let obj = { courseCode: user.courses[0].courseCode, image: dataUrl }
-      let res = await faceRecognitionApi.findFaces(obj)
-      console.log({ res });
-      setAttendance(res.classAttendance.allStudents)
-      setUnknownStudents(res.classAttendance.unknownStudents)
-      setAttendanceInfo(res)
+      let res = await faceRecognitionApi.getSingleFrame()
+      console.log({ res })
+      dataUrl = res
     } catch (error) {
       console.log({ error })
     }
+
+    console.log('capturing', dataUrl)
+    // try {
+    //   let obj = { courseCode: user.courses[0].courseCode, image: dataUrl }
+    //   let res = await faceRecognitionApi.findFaces(obj)
+    //   console.log({ res });
+    //   setAttendance(res.classAttendance.allStudents)
+    //   setUnknownStudents(res.classAttendance.unknownStudents)
+    //   setAttendanceInfo(res)
+    // } catch (error) {
+    //   console.log({ error })
+    // }
   }, [dataUrl, user.courses]);
 
-  const getBase64FromImageUrl = url => {
-    const img = new Image();
+  const getBase64FromImageUrl = async url => {
+    let res = await fetch(url, {})
+    res = res.json()
+    console.log({ res })
+    // return new Promise((resolve, reject) => {
+    //   const img = new Image();
+    //   console.log('running ?')
 
-    img.setAttribute('crossOrigin', 'anonymous');
+    //   img.setAttribute('crossOrigin', 'anonymous');
 
-    img.onload = function () {
-      const canvas = document.createElement('canvas');
-      canvas.width = this.width;
-      canvas.height = this.height;
+    //   img.onload = function () {
+    //     const canvas = document.createElement('canvas');
+    //     canvas.width = this.width;
+    //     canvas.height = this.height;
 
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(this, 0, 0);
+    //     const ctx = canvas.getContext('2d');
+    //     ctx.drawImage(this, 0, 0);
 
-      const dataURL = canvas.toDataURL('image/png');
+    //     const dataURL = canvas.toDataURL('image/png');
 
-      console.log(dataURL.replace(/^data:image\/(png|jpg);base64,/, ''));
-      setDataUrl(dataURL.replace(/^data:image\/(png|jpg);base64,/, ''))
-    };
+    //     console.log(dataURL.replace(/^data:image\/(png|jpg);base64,/, ''));
+    //     setDataUrl(dataURL.replace(/^data:image\/(png|jpg);base64,/, ''))
+    //   };
 
-    img.src = url;
+    //   img.src = url;
+    //   resolve()
+    // })
   };
 
   useEffect(() => {
     if (startAttendance && !paused) {
       let t = setInterval(() => {
         console.log('its been 3secs')
-        capture()
+        // capture()
       }, 3000);
       timer.current = t;
     }
@@ -190,36 +204,28 @@ const Dashboard = ({ user }) => {
       </div>
       <div className={'d-flex'} style={{ flex: '1' }}>
         <div className={`d-flex flex-column ${styles.webCamContainer}`}>
-          <div className={`shadow-sm d-flex align-items-center justify-content-center ml-2 ${styles.webCamWrapper}`}>
-            {startAttendance ? (
-              // <Webcam
-              //   audio={false}
-              //   ref={webcamRef}
-              //   screenshotFormat="image/jpg"
-              //   height={'98%'}
-              //   style={{ borderRadius: 20 }}
-              // // videoConstraints={{ deviceId: devices[1].deviceId }}
-              // />
-              <div style={{ flex: 1, height: '800px' }}>
-                <img id='video_feed' src="http://127.0.0.1:5000/api/v1/videoFeed" alt="videofeed" height='100%' width='100%' />
-              </div>
-            ) : (
-              <div className={`${styles.notRecordingBox}`}>
-                {isLoading ? (
-                  <div className="d-flex justify-content-center align-items-center mt-2">
-                    <div className="spinner-border" style={{ width: '2rem', height: '2rem', color: '#406df9' }} role="status">
-                    </div>
+          <div className={`shadow-sm d-flex align-items-center justify-content-center ml-2 ${styles.webCamWrapper}`} style={{position: 'relative'}}>
+            <div style={{ position: 'absolute', flex: 1, height: '800px' }}>
+             <img src="https://images.ctfassets.net/hrltx12pl8hq/3MbF54EhWUhsXunc5Keueb/60774fbbff86e6bf6776f1e17a8016b4/04-nature_721703848.jpg?" alt="pics" height='100%' width='100%' style={startAttendance ? {display: 'initial'} : {display: 'none'}}/>
+              {/* <div style={{ flex: 1, height: '800px' }}>
+                 <img id='video_feed' src="http://127.0.0.1:5000/api/v1/videoFeed" alt="videofeed" height='100%' width='100%' />
+               </div> */}
+            </div>
+            <div className={`${styles.notRecordingBox}`}>
+              {isLoading ? (
+                <div className="d-flex justify-content-center align-items-center mt-2">
+                  <div className="spinner-border" style={{ width: '2rem', height: '2rem', color: '#406df9' }} role="status">
                   </div>
-                ) : (
-                  <>
-                    <h5>To start Taking Attendance click button below</h5>
-                    <div className={`mt-1 ${styles.recordBtnIndicator}`}>
-                      <CameraVideo size={30} color="#B4B7B5" />
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
+                </div>
+              ) : (
+                <>
+                  <h5>To start Taking Attendance click button below</h5>
+                  <div className={`mt-1 ${styles.recordBtnIndicator}`}>
+                    <CameraVideo size={30} color="#B4B7B5" />
+                  </div>
+                </>
+              )}
+            </div>
           </div>
           {/* <div className={`${styles.bounding_box}`} style={{top: 100, right: 100, bottom: 100, left: 100}}></div> */}
           <div className={`${styles.btnPositions}`}>
