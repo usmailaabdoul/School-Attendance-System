@@ -1,7 +1,7 @@
 .profileImage {
   width        : 55px;
   height       : 55px;
-  border-radius: 8px
+  border-radius: 10px
 }
 
 .profileContainer {
@@ -32,4 +32,17 @@
 .checkBox {
   border-width    : 0;
   background-color: transparent;
+}
+
+.profileNameTag {
+  width        : 55px;
+  height       : 55px;
+  border-radius: 10px;
+  text-align   : center;
+  display      : flex;
+  align-items  : center;
+  justify-content  : center;
+  color: white;
+  font-size: 26px;
+  font-weight: 500;
 }

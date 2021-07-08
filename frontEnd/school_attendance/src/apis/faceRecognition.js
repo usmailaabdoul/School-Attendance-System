@@ -40,13 +40,28 @@ class FaceRecognitionApi {
   }
 
   async getSingleFrame() {
+    let url = 'http://127.0.0.1:5000/api/v1/singleFrame'
     try {
-      let res = await fetch(`${url}/singleFrame`, {...config, method: 'GET'})
-      res = res.json()
-      return res
-    } catch (e) {
-      throw e
-    }
+    let res = await fetch(url, {
+      method: 'GET', headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    })
+    console.log({ res })
+    res = res.json()
+  } catch (e) {
+    console.log({ e })
+  }
+    // .then(function(response) {
+    //   return response.json();
+    // })
+    // .then(function(data) {
+    //   return data
+    // })
+    // .catch((e) => {
+    //   console.log({e})
+    // })
   }
 }
 

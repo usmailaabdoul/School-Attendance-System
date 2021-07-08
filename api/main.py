@@ -1,5 +1,5 @@
 from cv2 import data
-from flask import Flask, request, jsonify, Response
+from flask import Flask, Response, request, jsonify
 from bson.json_util import dumps, loads
 from flask_cors import CORS, cross_origin
 from flask_pymongo import PyMongo
@@ -26,7 +26,7 @@ lecturerCollection = mongo.db.lecturers
 courseCollection = mongo.db.courses
 attendanceCollection = mongo.db.attendance
 
-@app.route('/api/v1/test', methods=["POST", "OPTIONS"])
+@app.route('/api/v1/test', methods=["GET", "OPTIONS"])
 @cross_origin(headers='Content-Type')
 def test():
   res = jsonify('You are able to connect to the server')
@@ -38,13 +38,12 @@ def video_feed():
   return Response(helpers.gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/api/v1/singleFrame', methods=["GET", "OPTIONS"])
+@cross_origin(headers='Content-Type')
 def single_frame():
   data = helpers.single_frame()
-  res = {}
-  res['dataUrl'] = data
-  # res = jsonify('done!!!!!')
-  print({res})
-  return dumps(res)
+
+  res = jsonify(f'{data}')
+  return res
 
 @app.route('/api/v1/addNewStudent', methods=["POST", "OPTIONS"])
 @cross_origin(headers='Content-Type')

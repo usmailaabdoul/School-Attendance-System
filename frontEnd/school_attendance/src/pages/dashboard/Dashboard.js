@@ -25,9 +25,34 @@ const Dashboard = ({ user }) => {
   const [devices, setDevices] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [unknownStudents, setUnknownStudents] = useState([]);
-  const [dataUrl, setDataUrl] = useState('');
+  // const [dataUrl, setDataUrl] = useState('');
 
+  let dataUrlRef = useRef('');
   let timer = useRef();
+
+  useEffect(() => {
+    const runTest = async () => {
+      try {
+        let url = 'http://127.0.0.1:5000/api/v1/test'
+        fetch(url, {
+          method: 'GET', headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          }
+        })
+          .then(function (response) {
+            return response.json();
+          })
+          .then(function (data) {
+            console.log('here', data)
+          })
+      } catch (e) {
+        console.log({ e })
+      }
+    }
+
+    // runTest()
+  }, [])
 
   useEffect(() => {
     if (sortBy === 'present') {
@@ -41,62 +66,47 @@ const Dashboard = ({ user }) => {
   }, [attendance, sortBy])
 
   const capture = React.useCallback(async () => {
-    let dataUrl = ''
     try {
-      let res = await faceRecognitionApi.getSingleFrame()
-      console.log({ res })
-      dataUrl = res
-    } catch (error) {
-      console.log({ error })
+      await getBase64FromImageUrl()
+    } catch (e) {
+      console.log({ e })
     }
 
-    console.log('capturing', dataUrl)
-    // try {
-    //   let obj = { courseCode: user.courses[0].courseCode, image: dataUrl }
-    //   let res = await faceRecognitionApi.findFaces(obj)
-    //   console.log({ res });
-    //   setAttendance(res.classAttendance.allStudents)
-    //   setUnknownStudents(res.classAttendance.unknownStudents)
-    //   setAttendanceInfo(res)
-    // } catch (error) {
-    //   console.log({ error })
-    // }
-  }, [dataUrl, user.courses]);
+    if (dataUrlRef.current.length > 0) {
+      try {
+        let obj = { courseCode: user.courses[0].courseCode, image: dataUrlRef.current }
+        let res = await faceRecognitionApi.findFaces(obj)
+        console.log({ res });
+        setAttendance(res.classAttendance.allStudents)
+        setUnknownStudents(res.classAttendance.unknownStudents)
+        setAttendanceInfo(res)
+      } catch (error) {
+        console.log({ error })
+      }
+    }
+  }, [user.courses]);
 
-  const getBase64FromImageUrl = async url => {
-    let res = await fetch(url, {})
-    res = res.json()
-    console.log({ res })
-    // return new Promise((resolve, reject) => {
-    //   const img = new Image();
-    //   console.log('running ?')
-
-    //   img.setAttribute('crossOrigin', 'anonymous');
-
-    //   img.onload = function () {
-    //     const canvas = document.createElement('canvas');
-    //     canvas.width = this.width;
-    //     canvas.height = this.height;
-
-    //     const ctx = canvas.getContext('2d');
-    //     ctx.drawImage(this, 0, 0);
-
-    //     const dataURL = canvas.toDataURL('image/png');
-
-    //     console.log(dataURL.replace(/^data:image\/(png|jpg);base64,/, ''));
-    //     setDataUrl(dataURL.replace(/^data:image\/(png|jpg);base64,/, ''))
-    //   };
-
-    //   img.src = url;
-    //   resolve()
-    // })
+  const getBase64FromImageUrl = async () => {
+    let url = 'http://127.0.0.1:5000/api/v1/singleFrame'
+    fetch(url, {
+      method: 'GET', headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    })
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (res) {
+        dataUrlRef.current = res;
+      })
   };
 
   useEffect(() => {
     if (startAttendance && !paused) {
       let t = setInterval(() => {
         console.log('its been 3secs')
-        // capture()
+        capture()
       }, 3000);
       timer.current = t;
     }
@@ -204,12 +214,12 @@ const Dashboard = ({ user }) => {
       </div>
       <div className={'d-flex'} style={{ flex: '1' }}>
         <div className={`d-flex flex-column ${styles.webCamContainer}`}>
-          <div className={`shadow-sm d-flex align-items-center justify-content-center ml-2 ${styles.webCamWrapper}`} style={{position: 'relative'}}>
-            <div style={{ position: 'absolute', flex: 1, height: '800px' }}>
-             <img src="https://images.ctfassets.net/hrltx12pl8hq/3MbF54EhWUhsXunc5Keueb/60774fbbff86e6bf6776f1e17a8016b4/04-nature_721703848.jpg?" alt="pics" height='100%' width='100%' style={startAttendance ? {display: 'initial'} : {display: 'none'}}/>
-              {/* <div style={{ flex: 1, height: '800px' }}>
-                 <img id='video_feed' src="http://127.0.0.1:5000/api/v1/videoFeed" alt="videofeed" height='100%' width='100%' />
-               </div> */}
+          <div className={`shadow-sm d-flex align-items-center justify-content-center ml-2 ${styles.webCamWrapper}`} style={{ position: 'relative' }}>
+            <div style={{ position: 'absolute', flex: 1, height: '900px', width: '100%' }}>
+              {/* <img src="https://images.ctfassets.net/hrltx12pl8hq/3MbF54EhWUhsXunc5Keueb/60774fbbff86e6bf6776f1e17a8016b4/04-nature_721703848.jpg?" alt="pics" height='100%' width='100%' style={startAttendance ? {display: 'initial'} : {display: 'none'}}/> */}
+              {/* <div style={{ flex: 1, height: '800px' }}> */}
+              <img id='video_feed' src="http://127.0.0.1:5000/api/v1/videoFeed" alt="videofeed" height='100%' width='100%' style={startAttendance ? { display: 'initial' } : { display: 'none' }} />
+              {/* </div> */}
             </div>
             <div className={`${styles.notRecordingBox}`}>
               {isLoading ? (
