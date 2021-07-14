@@ -120,11 +120,14 @@ def findFaces():
 
     data = request.get_json()
 
-    img_data = data['image']
+    # img_data = data['image']
     courseCode = data['courseCode']
 
     path = f'api/currentFrame/imageFrame'
-    helpers.base64toImg(img_data, path)
+    # helpers.base64toImg(img_data, path)
+
+    helpers.single_frame(path)
+    # print(d)
     
     date = helpers.getDate() # Date of today
     currentClassAttendace = attendance.getAttendance(date, courseCode)

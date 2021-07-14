@@ -50,7 +50,6 @@ def findFaces(path, currentClassAttendanceObj):
   students = currentClassAttendanceObj[0]['classAttendance']['allStudents']
   unknownStudents = currentClassAttendanceObj[0]['classAttendance']['unknownStudents']
 
-  # print(facesCurFrame, encodeCurFrame)
   for encodeFace, faceLoc in zip(encodeCurFrame, facesCurFrame):
     matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
     faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
@@ -112,20 +111,21 @@ def gen_frames():
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-def single_frame():
+def single_frame(path):
   source2 = "rtsp://admin:1234@192.168.1.217:554/stream2"
   cap2 = cv2.VideoCapture(source2)
-  dataUrl = ''
+  # dataUrl = ''
   while cap2.isOpened():
     ret, frame = cap2.read()
 
     if (ret != True):
         break
     else:
-      filename = './testimage.jpg'
+      filename = f'{path}.jpg'
       cv2.imwrite(filename, frame)
 
-      with open(filename, "rb") as img_file:
-        dataUrl = base64.b64encode(img_file.read())
+      # with open(filename, "rb") as img_file:
+      #   dataUrl = base64.b64encode(img_file.read())
     cap2.release()
-    return dataUrl.decode('utf-8')
+    # dataUrl.decode('utf-8')
+    return 

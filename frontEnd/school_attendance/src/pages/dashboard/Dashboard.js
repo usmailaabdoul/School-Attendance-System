@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
-import Webcam from "react-webcam";
 import { CameraVideo, CameraVideoOffFill, PauseFill, PlayFill, ChevronUp, ChevronDown } from 'react-bootstrap-icons';
 import { connect } from "react-redux";
-import { imgSrcToBlob, createObjectURL } from 'blob-util'
 
 import { AttendanceCard, SortButton } from '../../components';
 
@@ -13,7 +11,6 @@ import Swal from 'sweetalert2'
 import styles from './dashboard.module.css';
 
 const Dashboard = ({ user }) => {
-  const webcamRef = useRef(null);
   const [startAttendance, setStartAttendance] = useState(false);
   const [paused, setPaused] = useState(false);
   const [attendance, setAttendance] = useState([]);
@@ -22,37 +19,10 @@ const Dashboard = ({ user }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [attendanceInfo, setAttendanceInfo] = useState({});
-  const [devices, setDevices] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [unknownStudents, setUnknownStudents] = useState([]);
-  // const [dataUrl, setDataUrl] = useState('');
 
-  let dataUrlRef = useRef('');
   let timer = useRef();
-
-  useEffect(() => {
-    const runTest = async () => {
-      try {
-        let url = 'http://127.0.0.1:5000/api/v1/test'
-        fetch(url, {
-          method: 'GET', headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          }
-        })
-          .then(function (response) {
-            return response.json();
-          })
-          .then(function (data) {
-            console.log('here', data)
-          })
-      } catch (e) {
-        console.log({ e })
-      }
-    }
-
-    // runTest()
-  }, [])
 
   useEffect(() => {
     if (sortBy === 'present') {
@@ -67,40 +37,16 @@ const Dashboard = ({ user }) => {
 
   const capture = React.useCallback(async () => {
     try {
-      await getBase64FromImageUrl()
-    } catch (e) {
-      console.log({ e })
-    }
-
-    if (dataUrlRef.current.length > 0) {
-      try {
-        let obj = { courseCode: user.courses[0].courseCode, image: dataUrlRef.current }
-        let res = await faceRecognitionApi.findFaces(obj)
-        console.log({ res });
-        setAttendance(res.classAttendance.allStudents)
-        setUnknownStudents(res.classAttendance.unknownStudents)
-        setAttendanceInfo(res)
-      } catch (error) {
-        console.log({ error })
-      }
+      let obj = { courseCode: user.courses[0].courseCode }
+      let res = await faceRecognitionApi.findFaces(obj)
+      console.log({ res });
+      setAttendance(res.classAttendance.allStudents)
+      setUnknownStudents(res.classAttendance.unknownStudents)
+      setAttendanceInfo(res)
+    } catch (error) {
+      console.log({ error })
     }
   }, [user.courses]);
-
-  const getBase64FromImageUrl = async () => {
-    let url = 'http://127.0.0.1:5000/api/v1/singleFrame'
-    fetch(url, {
-      method: 'GET', headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      }
-    })
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (res) {
-        dataUrlRef.current = res;
-      })
-  };
 
   useEffect(() => {
     if (startAttendance && !paused) {
@@ -111,19 +57,6 @@ const Dashboard = ({ user }) => {
       timer.current = t;
     }
   }, [capture, paused, startAttendance]);
-
-  const handleDevices = React.useCallback(
-    mediaDevices =>
-      setDevices(mediaDevices.filter(({ kind }) => kind === "videoinput")),
-    [setDevices]
-  );
-
-  useEffect(
-    () => {
-      navigator.mediaDevices.enumerateDevices().then(handleDevices);
-    },
-    [handleDevices]
-  );
 
   const closeWebCam = () => {
     Swal.fire({
@@ -204,7 +137,6 @@ const Dashboard = ({ user }) => {
             <div class="dropdown">
               <span>
                 <a href="###" class="d-flex align-items-center text-dark text-decoration-none">
-                  {/* <img src="https://github.com/mdo.png" alt="" width="40" height="40" class="rounded-circle me-2" /> */}
                   <h4>{user.name}</h4>
                 </a>
               </span>
@@ -216,10 +148,7 @@ const Dashboard = ({ user }) => {
         <div className={`d-flex flex-column ${styles.webCamContainer}`}>
           <div className={`shadow-sm d-flex align-items-center justify-content-center ml-2 ${styles.webCamWrapper}`} style={{ position: 'relative' }}>
             <div style={{ position: 'absolute', flex: 1, height: '900px', width: '100%' }}>
-              {/* <img src="https://images.ctfassets.net/hrltx12pl8hq/3MbF54EhWUhsXunc5Keueb/60774fbbff86e6bf6776f1e17a8016b4/04-nature_721703848.jpg?" alt="pics" height='100%' width='100%' style={startAttendance ? {display: 'initial'} : {display: 'none'}}/> */}
-              {/* <div style={{ flex: 1, height: '800px' }}> */}
               <img id='video_feed' src="http://127.0.0.1:5000/api/v1/videoFeed" alt="videofeed" height='100%' width='100%' style={startAttendance ? { display: 'initial' } : { display: 'none' }} />
-              {/* </div> */}
             </div>
             <div className={`${styles.notRecordingBox}`}>
               {isLoading ? (
